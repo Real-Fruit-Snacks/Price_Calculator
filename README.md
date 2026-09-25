@@ -33,10 +33,15 @@ Dog Sitting At Danni's House provides professional pet care services in a home e
 - Early morning and evening care available
 - Automatic conversion to daily rates when applicable
 
-**Multi-Pet Services**: 20% surcharge per additional pet
+**Multi-Pet Services**: 20% off each additional pet
 - All pets accommodated together
 - Individual attention and care protocols
 - Volume pricing for family pet households
+
+**Holiday Stays**: Flat $25 holiday fee per stay
+- Applies when the stay includes a holiday
+- Charged once, regardless of number of pets or length of stay
+- Toggle "Holiday Stay" in the calculator to include it
 
 ### Service Policies
 
@@ -61,6 +66,7 @@ Dog Sitting At Danni's House provides professional pet care services in a home e
 #### Cost Calculator
 - Real-time pricing calculations
 - Multi-pet pricing algorithms
+- Holiday stay toggle with flat holiday fee (`HOLIDAY_FEE` in `script.js`)
 - Date range processing with hour calculations
 - Professional estimate generation
 
@@ -197,6 +203,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ## Version History
 
 ### Version 2.0 (Current)
+- Holiday stay toggle and holiday fee
 - Professional UI redesign
 - Enhanced performance optimizations
 - Improved print functionality

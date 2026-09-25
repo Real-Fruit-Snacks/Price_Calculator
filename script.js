@@ -78,6 +78,10 @@ domReady(function() {
     setupEventListeners();
     document.getElementById('holiday-toggle-hint').textContent =
         `Adds a ${formatCurrency(HOLIDAY_FEE)} holiday fee to the stay`;
+    // Keep holiday fee mentions in the pricing section and FAQ in sync with HOLIDAY_FEE
+    document.querySelectorAll('.holiday-fee-value').forEach(el => {
+        el.textContent = '$' + HOLIDAY_FEE;
+    });
 
     // Non-critical in idle time
     runWhenIdle(() => {
