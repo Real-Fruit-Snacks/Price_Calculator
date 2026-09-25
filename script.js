@@ -7,7 +7,7 @@ let currentDogData = { name: '', breed: '', size: '' };
 const NIGHTLY_RATE = 55;          // per 24-hour session, per pet (first pet)
 const HOURLY_RATE = 5;            // per extra hour, per pet (first pet)
 const ADDITIONAL_PET_FACTOR = 0.80; // additional pets pay 80% (20% off)
-const HOLIDAY_FEE = 25;           // flat fee per stay when the holiday toggle is on
+const HOLIDAY_FEE_RATE = 0.05;    // holiday stays add 5% on top of the stay total
 
 // DOM Elements
 const form = document.getElementById('calculator-form');
@@ -77,10 +77,10 @@ domReady(function() {
     // Critical path first
     setupEventListeners();
     document.getElementById('holiday-toggle-hint').textContent =
-        `Adds a ${formatCurrency(HOLIDAY_FEE)} holiday fee to the stay`;
-    // Keep holiday fee mentions in the pricing section and FAQ in sync with HOLIDAY_FEE
+        `Adds a ${formatPercent(HOLIDAY_FEE_RATE)} holiday fee to the stay total`;
+    // Keep holiday fee mentions in the pricing section, FAQ and estimate in sync with HOLIDAY_FEE_RATE
     document.querySelectorAll('.holiday-fee-value').forEach(el => {
-        el.textContent = '$' + HOLIDAY_FEE;
+        el.textContent = formatPercent(HOLIDAY_FEE_RATE);
     });
 
     // Non-critical in idle time
@@ -367,12 +367,13 @@ function calculateCost() {
         // Total = base x (1 + 0.20-off applied to each additional pet).
         const numDogs = dogs.length;
         const multiplier = 1 + (numDogs - 1) * ADDITIONAL_PET_FACTOR;
-        const holidayFee = holidayToggle.checked ? HOLIDAY_FEE : 0;
-        const totalCost = baseCost * multiplier + holidayFee;
+        const stayCost = baseCost * multiplier;
+        const holidayFee = holidayToggle.checked ? stayCost * HOLIDAY_FEE_RATE : 0;
+        const totalCost = stayCost + holidayFee;
 
         // Discount = what all pets would cost at full price minus the actual total.
         const fullPriceCost = baseCost * numDogs;
-        const multiPetDiscount = numDogs > 1 ? fullPriceCost - baseCost * multiplier : 0;
+        const multiPetDiscount = numDogs > 1 ? fullPriceCost - stayCost : 0;
 
         // Hide loading state
         hideLoadingState();
@@ -384,6 +385,10 @@ function calculateCost() {
 
 function formatCurrency(amount) {
     return '$' + amount.toFixed(2);
+}
+
+function formatPercent(rate) {
+    return Math.round(rate * 1000) / 10 + '%';
 }
 
 function generateQuoteNumber() {
@@ -500,7 +505,7 @@ function displayResults(numDogs, sessions, extraHours, sessionCost, extraHoursCo
         multiDogRow.style.display = 'none';
     }
 
-    // Holiday fee: flat charge per stay, shown only when toggled on
+    // Holiday fee: percentage of the stay total, shown only when toggled on
     const holidayRow = document.getElementById('holiday-fee-row');
     if (holidayFee > 0) {
         holidayRow.style.display = 'flex';
@@ -816,9 +821,9 @@ function updatePrintReceipt() {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>Holiday Fee</td>
-            <td>1</td>
-            <td>${formatCurrency(HOLIDAY_FEE)}</td>
-            <td>${formatCurrency(HOLIDAY_FEE)}</td>
+            <td>—</td>
+            <td>${formatPercent(HOLIDAY_FEE_RATE)}</td>
+            <td>${document.getElementById('holiday-fee-amount').textContent}</td>
         `;
         breakdown.appendChild(row);
     }
