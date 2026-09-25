@@ -12,7 +12,7 @@ All rates are defined once, at the top of `script.js`, and every figure shown on
 
 | Constant | Value | Meaning |
 |----------|-------|---------|
-| `NIGHTLY_RATE` | $55 | per 24-hour day, per pet |
+| `NIGHTLY_RATE` | $55 | per 24-hour day (first pet) |
 | `HOURLY_RATE` | $5 | per extra hour beyond a full day, rounded up to the next hour |
 | `ADDITIONAL_PET_FACTOR` | 0.80 | each additional pet pays 80% (20% off) |
 | `HOLIDAY_FEE_RATE` | 0.05 | 5% added to the stay total when the "Holiday Stay" switch is on |
@@ -22,7 +22,7 @@ All rates are defined once, at the top of `script.js`, and every figure shown on
 How a stay is priced:
 
 1. The stay length is measured in local wall-clock time, so a 9am-to-9am night is always 24 hours, even across a daylight-saving change.
-2. Each full 24-hour period is one day. Leftover time is billed by the hour, rounded up. Once the extra hours would cost as much as a day, they count as another day instead (so 12 hours is one day, never $60).
+2. Each full 24-hour period is one day. Leftover time is billed by the hour, rounded up. Once the extra hours would cost as much as a day (11 or more hours at $5), they count as another day instead, so a 12-hour stay is one $55 day, never $60.
 3. The first pet pays the full rate; each additional pet pays 80% of both the daily rate and the extra hours.
 4. If the holiday switch is on, 5% of the stay total is added.
 5. Stays of 3 or more days show the $50 deposit and the balance due at pick-up.

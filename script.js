@@ -5,9 +5,10 @@ let currentDogData = { name: '', breed: '', size: '' };
 let lastEstimate = null;          // the most recent calculation; the card and receipt render from this
 let lastFocusedElement = null;    // element to return focus to when a dialog closes
 let scrollLockY = 0;
+let pendingCalculation = null;    // timer for the brief "calculating" pause
 
 // Pricing constants (single source of truth — the page text is filled from these at startup)
-const NIGHTLY_RATE = 55;            // per 24-hour session, per pet (first pet)
+const NIGHTLY_RATE = 55;            // per 24-hour day, per pet (first pet)
 const HOURLY_RATE = 5;              // per extra hour, per pet (first pet)
 const ADDITIONAL_PET_FACTOR = 0.80; // additional pets pay 80% (20% off)
 const HOLIDAY_FEE_RATE = 0.05;      // holiday stays add 5% on top of the stay total
@@ -89,6 +90,7 @@ function fillPricingText() {
     fill('.second-pet-rate-value', formatCurrency(NIGHTLY_RATE * ADDITIONAL_PET_FACTOR, true));
     fill('.two-pet-total-value', formatCurrency(NIGHTLY_RATE * (1 + ADDITIONAL_PET_FACTOR), true));
     fill('.hour-cap-value', String(maxExtraHours()));
+    fill('.hour-flip-value', String(maxExtraHours() + 1));
 
     document.getElementById('twenty-four-hour-rate').textContent = '× ' + formatCurrency(NIGHTLY_RATE);
     document.getElementById('extra-hours-rate').textContent = '× ' + formatCurrency(HOURLY_RATE);
@@ -152,11 +154,7 @@ function setupEventListeners() {
         });
     });
 
-    // Holiday switch
-    holidayToggle.addEventListener('change', () => {
-        holidayToggle.setAttribute('aria-checked', holidayToggle.checked ? 'true' : 'false');
-        invalidateEstimate();
-    });
+    holidayToggle.addEventListener('change', invalidateEstimate);
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -166,6 +164,11 @@ function setupEventListeners() {
     document.getElementById('print-estimate-btn').addEventListener('click', printEstimate);
     document.getElementById('save-calendar-btn').addEventListener('click', saveToCalendar);
     document.getElementById('clear-data-btn').addEventListener('click', clearAllData);
+
+    // Browser-initiated printing (Ctrl+P) gets the same receipt as the Print button
+    window.addEventListener('beforeprint', () => {
+        if (lastEstimate) updatePrintReceipt(lastEstimate);
+    });
 
     // Dialog behaviour shared by both modals: click outside, Escape, Enter, focus trapping
     [datetimeModal, dogModal].forEach(modal => {
@@ -345,7 +348,7 @@ function saveDogModal() {
     dogs.push({
         id: Date.now(),
         name: currentDogData.name,
-        breed: currentDogData.breed || 'Breed not specified',
+        breed: currentDogData.breed,
         size: currentDogData.size
     });
 
@@ -391,7 +394,7 @@ function renderDogs() {
         dogCard.innerHTML = `
             <div class="dog-info">
                 <strong class="dog-name">${escapeHtml(dog.name)}</strong>
-                <div class="dog-details">${escapeHtml(dog.breed)} • ${capitalizeFirst(dog.size)}</div>
+                <div class="dog-details">${[dog.breed, capitalizeFirst(dog.size)].filter(Boolean).map(escapeHtml).join(' • ')}</div>
             </div>
             <button type="button" class="remove-dog-btn" data-id="${dog.id}" aria-label="Remove ${escapeHtml(dog.name)}">Remove</button>
         `;
@@ -565,21 +568,31 @@ function buildEstimate() {
 function calculateCost() {
     if (!validateForm()) return;
 
+    // Build from the inputs as they are right now; the pause below is only visual
+    const estimate = buildEstimate();
+    clearTimeout(pendingCalculation);
     setLoadingState(true);
     announce('Calculating your estimate…');
 
-    // Brief pause so the button visibly responds before the estimate appears
-    setTimeout(() => {
-        lastEstimate = buildEstimate();
+    pendingCalculation = setTimeout(() => {
+        pendingCalculation = null;
+        lastEstimate = estimate;
+        document.body.classList.add('has-estimate');
         setLoadingState(false);
-        displayResults(lastEstimate);
+        displayResults(estimate);
     }, 400);
 }
 
 // Any change to the inputs makes the estimate on screen out of date, so hide it until recalculated
 function invalidateEstimate() {
+    if (pendingCalculation) {
+        clearTimeout(pendingCalculation);
+        pendingCalculation = null;
+        setLoadingState(false);
+    }
     if (!lastEstimate) return;
     lastEstimate = null;
+    document.body.classList.remove('has-estimate');
     resultsDiv.classList.add('hidden');
 }
 
@@ -601,6 +614,11 @@ function formatPercent(rate) {
     return Math.round(rate * 1000) / 10 + '%';
 }
 
+function petLabel(p, withSize) {
+    const details = [p.breed, withSize ? capitalizeFirst(p.size) : ''].filter(Boolean).join(', ');
+    return details ? `${p.name} (${details})` : p.name;
+}
+
 function servicePeriodLabel(days, extraHours) {
     const dayPart = days > 0 ? `${days} day${days !== 1 ? 's' : ''}` : '';
     const hourPart = extraHours > 0 ? `${extraHours} hr${extraHours !== 1 ? 's' : ''}` : '';
@@ -617,7 +635,7 @@ function displayResults(est) {
     document.getElementById('dropoff-display').textContent = est.dropoffLabel || '—';
     document.getElementById('pickup-display').textContent = est.pickupLabel || '—';
     document.getElementById('pets-list-display').textContent =
-        est.pets.map(p => `${p.name} (${p.breed})`).join(', ') || '—';
+        est.pets.map(p => petLabel(p)).join(', ') || '—';
 
     // Single-pet rate rows
     document.getElementById('twenty-four-hour-count').textContent = est.days;
@@ -656,7 +674,7 @@ function displayResults(est) {
             if (est.extraHours > 0) {
                 subRows += `
                     <div class="per-pet-sub">
-                        <span class="sub-desc">Additional Hours</span>
+                        <span class="sub-desc">Extra Hours</span>
                         <span class="sub-calc">${est.extraHours} × ${formatCurrency(p.hourlyRate)}</span>
                         <span class="sub-amount">${formatCurrency(p.hours)}</span>
                     </div>`;
@@ -746,7 +764,11 @@ function setupMobileNav() {
         menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     };
 
-    menuBtn.addEventListener('click', () => setOpen(!links.classList.contains('open')));
+    menuBtn.addEventListener('click', () => {
+        const open = !links.classList.contains('open');
+        setOpen(open);
+        if (open && menuBtn.matches(':focus-visible')) links.querySelector('a').focus();
+    });
     links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setOpen(false)));
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && links.classList.contains('open')) {
@@ -768,6 +790,11 @@ function setupFAQ() {
         answer.id = answer.id || `faq-answer-${i + 1}`;
         btn.setAttribute('aria-expanded', 'false');
         btn.setAttribute('aria-controls', answer.id);
+        answer.hidden = true;
+        // Once the collapse animation ends, remove the answer from the accessibility tree
+        answer.addEventListener('transitionend', () => {
+            if (!item.classList.contains('open')) answer.hidden = true;
+        });
 
         btn.addEventListener('click', () => {
             const wasOpen = item.classList.contains('open');
@@ -779,9 +806,12 @@ function setupFAQ() {
             });
 
             if (!wasOpen) {
+                answer.hidden = false;
                 item.classList.add('open');
                 answer.style.maxHeight = answer.scrollHeight + 'px';
                 btn.setAttribute('aria-expanded', 'true');
+            } else if (prefersReducedMotion()) {
+                answer.hidden = true;
             }
         });
     });
@@ -798,7 +828,6 @@ function applyTheme(theme) {
     document.querySelector('meta[name="theme-color"]').content = theme === 'dark' ? '#1A0D2E' : '#F0EAFF';
     const toggle = document.getElementById('theme-toggle');
     toggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
-    toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
 }
 
 function syncThemeUI() {
@@ -836,15 +865,24 @@ function icsEscape(text) {
         .replace(/\r?\n/g, '\\n');
 }
 
-// Lines longer than 75 octets must be folded onto continuation lines
+// Lines longer than 75 octets must be folded onto continuation lines (RFC 5545 §3.1),
+// counting UTF-8 bytes and never splitting a character
 function icsFold(line) {
+    const encoder = new TextEncoder();
     const parts = [];
-    let rest = line;
-    while (rest.length > 75) {
-        parts.push(rest.slice(0, 75));
-        rest = ' ' + rest.slice(75);
+    let current = '';
+    let bytes = 0;
+    for (const ch of line) {
+        const size = encoder.encode(ch).length;
+        if (bytes + size > 75) {
+            parts.push(current);
+            current = ' ';
+            bytes = 1;
+        }
+        current += ch;
+        bytes += size;
     }
-    parts.push(rest);
+    parts.push(current);
     return parts.join('\r\n');
 }
 
@@ -856,7 +894,7 @@ function saveToCalendar() {
     if (!lastEstimate) return;
     const est = lastEstimate;
 
-    const petList = est.pets.map(p => `${p.name} (${p.breed}, ${capitalizeFirst(p.size)})`).join(', ');
+    const petList = est.pets.map(p => petLabel(p, true)).join(', ');
     const description = [
         `Dog sitting at Danni's House.`,
         ``,
@@ -898,7 +936,7 @@ function saveToCalendar() {
 }
 
 function clearAllData() {
-    if (!confirm('Clear all pets and dates?')) return;
+    if (!confirm('Clear the dates, pets, and estimate?')) return;
 
     dropoffInput.value = '';
     pickupInput.value = '';
@@ -909,9 +947,12 @@ function clearAllData() {
     renderDogs();
 
     holidayToggle.checked = false;
-    holidayToggle.setAttribute('aria-checked', 'false');
 
+    clearTimeout(pendingCalculation);
+    pendingCalculation = null;
+    setLoadingState(false);
     lastEstimate = null;
+    document.body.classList.remove('has-estimate');
     resultsDiv.classList.add('hidden');
 
     document.querySelectorAll('.input-error').forEach(el => el.classList.add('hidden'));
@@ -937,8 +978,7 @@ function updatePrintReceipt(est) {
     document.getElementById('receipt-dropoff').textContent = est.dropoffLabel;
     document.getElementById('receipt-pickup').textContent = est.pickupLabel;
     document.getElementById('receipt-period').textContent = servicePeriodLabel(est.days, est.extraHours);
-    document.getElementById('receipt-pets').textContent =
-        est.pets.map(p => `${p.name} (${p.breed}, ${capitalizeFirst(p.size)})`).join(', ');
+    document.getElementById('receipt-pets').textContent = est.pets.map(p => petLabel(p, true)).join(', ');
 
     const breakdown = document.getElementById('receipt-breakdown');
     breakdown.innerHTML = '';
@@ -950,7 +990,7 @@ function updatePrintReceipt(est) {
         }
         if (est.extraHours > 0) {
             breakdown.appendChild(receiptRow(
-                ['Additional Hours', est.extraHours, formatCurrency(p.hourlyRate), formatCurrency(p.hours)], { indent }));
+                ['Extra Hours', est.extraHours, formatCurrency(p.hourlyRate), formatCurrency(p.hours)], { indent }));
         }
     };
 
@@ -969,7 +1009,7 @@ function updatePrintReceipt(est) {
             addLines(p, true);
         });
         breakdown.appendChild(receiptRow(
-            ['Multi-pet discount (already applied above)', '—', '—', `you save ${formatCurrency(est.multiPetDiscount)}`],
+            [`Multi-pet discount already applied above (you save ${formatCurrency(est.multiPetDiscount)})`, '—', '—', '—'],
             { className: 'note-row' }));
     }
 
@@ -986,6 +1026,6 @@ function updatePrintReceipt(est) {
     document.getElementById('receipt-deposit').textContent = formatCurrency(est.depositDue);
     document.getElementById('receipt-balance').textContent = formatCurrency(est.balanceDue);
     document.getElementById('receipt-payment-note').textContent = est.depositDue > 0
-        ? `Cash preferred, Venmo accepted. ${formatCurrency(DEPOSIT_AMOUNT, true)} deposit due at booking; balance due at pick-up.`
-        : 'Cash preferred, Venmo accepted. Payment due at pick-up.';
+        ? 'Cash preferred, Venmo accepted. The deposit holds your dates and counts toward the total.'
+        : 'Cash preferred, Venmo accepted. Payment is due at pick-up.';
 }

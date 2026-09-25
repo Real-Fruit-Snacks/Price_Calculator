@@ -13,8 +13,11 @@
     <!-- Same saved-theme handling as the main page, applied before first paint -->
     <script>
         (function () {
-            var theme = 'light';
-            try { theme = localStorage.getItem('preferred-theme') || 'light'; } catch (e) {}
+            var theme = null;
+            try { theme = localStorage.getItem('preferred-theme'); } catch (e) {}
+            if (!theme) {
+                theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
             document.documentElement.setAttribute('data-theme', theme);
         })();
     </script>
@@ -119,6 +122,7 @@
         }
 
         h1 {
+            text-wrap: balance;
             font-size: 34px;
             font-weight: 800;
             line-height: 1.2;
@@ -229,10 +233,10 @@
             </svg>
             <div class="code">Error 404</div>
             <h1>That page wandered off</h1>
-            <p>The page you're looking for doesn't exist or has moved. Head back to the home page or jump straight to a quote.</p>
+            <p>The page you're looking for doesn't exist or has moved. Head back to the home page or jump straight to an estimate.</p>
             <div class="buttons">
                 <a class="btn-primary home-link" href="./">Back to Home</a>
-                <a class="btn-secondary home-link" href="./" data-hash="#calculator">Get a Quote</a>
+                <a class="btn-secondary home-link" href="./" data-hash="#calculator">Get an Estimate</a>
             </div>
         </div>
     </main>
