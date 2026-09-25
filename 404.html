@@ -2,205 +2,261 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Page Not Found - Dog Sitting At Danni's House</title>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="stylesheet" href="style.css">
+    <meta name="robots" content="noindex">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#F0EAFF">
+
+    <!-- Same saved-theme handling as the main page, applied before first paint -->
+    <script>
+        (function () {
+            var theme = 'light';
+            try { theme = localStorage.getItem('preferred-theme') || 'light'; } catch (e) {}
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
+    <!-- This page is self-contained (no external stylesheet, favicon or script) so it renders
+         correctly at any mistyped address, including nested paths. -->
     <style>
-        .error-container {
-            text-align: center;
-            padding: 3rem 2rem;
-            max-width: 700px;
-            margin: 0 auto;
+        :root {
+            --crust:    #F0EAFF;
+            --mantle:   #FFFFFF;
+            --base:     #F8F5FF;
+            --surface0: #E0D4F7;
+            --surface1: #D4C4F0;
+            --text:     #2D1B5E;
+            --subtext0: #6B5B8D;
+            --accent-text:   #5B3FC4;
+            --btn-gradient:  linear-gradient(135deg, #5B3FC4, #007A70);
+            --btn-text:      #FFFFFF;
+            --text-gradient: linear-gradient(135deg, #5B3FC4, #007A70);
         }
-        
-        .lost-dog {
-            font-size: 6rem;
-            margin-bottom: 1.5rem;
-            animation: wiggle 2s ease-in-out infinite;
-            display: block;
+
+        [data-theme="dark"] {
+            --crust:    #1A0D2E;
+            --mantle:   #261240;
+            --base:     #321852;
+            --surface0: #3E1F64;
+            --surface1: #4A2576;
+            --text:     #F0EAFF;
+            --subtext0: #D4C4F0;
+            --accent-text:   #D4C4F0;
+            --btn-gradient:  linear-gradient(135deg, #D4C4F0, #00F0DE);
+            --btn-text:      #1A0D2E;
+            --text-gradient: linear-gradient(135deg, #D4C4F0, #00F0DE);
         }
-        
-        @keyframes wiggle {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-5deg); }
-            75% { transform: rotate(5deg); }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        .error-title {
-            color: var(--primary-color);
-            font-size: 2.8rem;
-            margin-bottom: 1.5rem;
-            font-weight: 700;
-        }
-        
-        .error-subtitle {
-            color: var(--primary-color);
-            font-size: 1.4rem;
-            margin-bottom: 2rem;
-            font-weight: 600;
-        }
-        
-        .error-message {
-            font-size: 1.1rem;
-            color: var(--text-color);
-            margin-bottom: 2.5rem;
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.6;
-            opacity: 0.8;
+            color: var(--text);
+            background: var(--crust);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
         }
-        
-        .home-btn {
-            display: inline-block;
-            padding: 1.2rem 2.5rem;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 15px;
+
+        nav {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            border-bottom: 1px solid var(--surface0);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             font-weight: 700;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
-            font-family: 'Quicksand', sans-serif;
+            font-size: 18px;
+            color: var(--text);
+            text-decoration: none;
         }
-        
-        .home-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 1.5rem;
         }
-        
-        .helpful-links {
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 2px dashed var(--border-color);
+
+        .card {
+            max-width: 560px;
+            width: 100%;
+            text-align: center;
+            background: var(--mantle);
+            border: 1px solid var(--surface0);
+            border-radius: 20px;
+            padding: 3rem 2rem;
         }
-        
-        .helpful-links h3 {
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
-        }
-        
-        .helpful-links p {
-            color: var(--text-color);
-            opacity: 0.8;
+
+        .card svg {
+            width: 72px;
+            height: 72px;
             margin-bottom: 1.5rem;
         }
-        
-        .quick-links {
+
+        .code {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-text);
+            margin-bottom: 0.75rem;
+        }
+
+        h1 {
+            font-size: 34px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            background: var(--text-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        p {
+            color: var(--subtext0);
+            font-size: 17px;
+            margin-bottom: 2rem;
+        }
+
+        .buttons {
             display: flex;
             gap: 1rem;
             justify-content: center;
             flex-wrap: wrap;
         }
-        
-        .quick-link {
-            padding: 0.8rem 1.5rem;
-            background: var(--border-color);
-            color: var(--text-color);
-            text-decoration: none;
-            border-radius: 10px;
+
+        .btn-primary,
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.9rem 1.75rem;
+            border-radius: 12px;
             font-weight: 600;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
+            font-size: 16px;
+            text-decoration: none;
+            transition: transform 0.2s ease;
         }
-        
-        .quick-link:hover {
-            background: var(--primary-color);
-            color: white;
+
+        .btn-primary {
+            background: var(--btn-gradient);
+            color: var(--btn-text);
+        }
+
+        .btn-secondary {
+            background: var(--surface0);
+            color: var(--text);
+            border: 1px solid var(--surface1);
+        }
+
+        .btn-primary:hover,
+        .btn-secondary:hover {
             transform: translateY(-2px);
         }
-        
-        @media (max-width: 600px) {
-            .error-title {
-                font-size: 2.2rem;
-            }
-            
-            .error-subtitle {
-                font-size: 1.2rem;
-            }
-            
-            .lost-dog {
-                font-size: 4.5rem;
-            }
-            
-            .home-btn {
-                padding: 1rem 2rem;
-                font-size: 1rem;
-            }
-            
-            .quick-links {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .quick-link {
-                width: 100%;
-                max-width: 250px;
-                text-align: center;
-            }
+
+        :focus-visible {
+            outline: 3px solid var(--accent-text);
+            outline-offset: 2px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--subtext0);
+            font-size: 14px;
+            border-top: 1px solid var(--surface0);
+        }
+
+        @media (max-width: 480px) {
+            nav { padding: 0 1rem; height: 56px; }
+            .card { padding: 2.5rem 1.5rem; }
+            h1 { font-size: 28px; }
+            .btn-primary, .btn-secondary { width: 100%; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .btn-primary, .btn-secondary { transition: none; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="header-content">
-                <div class="paw-print">🐾</div>
-                <div class="header-text">
-                    <h1>Dog Sitting At Danni's House</h1>
-                    <p class="subtitle">Oops! This page went for a walk! 🐕</p>
-                </div>
-            </div>
-            <button id="dark-mode-toggle" class="dark-mode-toggle" aria-label="Toggle dark mode">
-                <span class="sun-icon">☀️</span>
-                <span class="moon-icon">🌙</span>
-            </button>
-        </header>
+    <nav aria-label="Main">
+        <a class="nav-logo home-link" href="./">
+            <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" fill="none" aria-hidden="true">
+                <defs>
+                    <linearGradient id="pawGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#B8A5E8;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#00D4C4;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <ellipse cx="16" cy="20" rx="6.7" ry="6" fill="url(#pawGradient)" />
+                <ellipse cx="10.7" cy="12" rx="2.7" ry="3.7" fill="url(#pawGradient)" />
+                <ellipse cx="16" cy="10" rx="2.7" ry="3.7" fill="url(#pawGradient)" />
+                <ellipse cx="21.3" cy="12" rx="2.7" ry="3.7" fill="url(#pawGradient)" />
+                <ellipse cx="8" cy="16" rx="2.4" ry="3.3" fill="url(#pawGradient)" />
+                <ellipse cx="24" cy="16" rx="2.4" ry="3.3" fill="url(#pawGradient)" />
+            </svg>
+            Danni's House
+        </a>
+    </nav>
 
-        <main>
-            <div class="calculator-card">
-                <div class="error-container">
-                    <div class="lost-dog">🐕</div>
-                    <h2 class="error-title">404</h2>
-                    <h3 class="error-subtitle">Oops! Page Not Found</h3>
-                    <p class="error-message">
-                        Looks like this page ran off to chase squirrels! 🐿️<br>
-                        Don't worry - let's get you back to calculating your furry friend's stay costs.
-                    </p>
-                    <a href="index.html" class="home-btn">🏠 Return to Calculator</a>
-                    
-                    <div class="helpful-links">
-                        <h3>🐾 Need Help?</h3>
-                        <p>Here are some helpful places to get started:</p>
-                        <div class="quick-links">
-                            <a href="index.html" class="quick-link">💰 Cost Calculator</a>
-                            <a href="index.html#pricing" class="quick-link">📋 Our Pricing</a>
-                        </div>
-                    </div>
-                </div>
+    <main>
+        <div class="card">
+            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" fill="none" aria-hidden="true">
+                <ellipse cx="16" cy="20" rx="6.7" ry="6" fill="url(#pawGradient)" />
+                <ellipse cx="10.7" cy="12" rx="2.7" ry="3.7" fill="url(#pawGradient)" />
+                <ellipse cx="16" cy="10" rx="2.7" ry="3.7" fill="url(#pawGradient)" />
+                <ellipse cx="21.3" cy="12" rx="2.7" ry="3.7" fill="url(#pawGradient)" />
+                <ellipse cx="8" cy="16" rx="2.4" ry="3.3" fill="url(#pawGradient)" />
+                <ellipse cx="24" cy="16" rx="2.4" ry="3.3" fill="url(#pawGradient)" />
+            </svg>
+            <div class="code">Error 404</div>
+            <h1>That page wandered off</h1>
+            <p>The page you're looking for doesn't exist or has moved. Head back to the home page or jump straight to a quote.</p>
+            <div class="buttons">
+                <a class="btn-primary home-link" href="./">Back to Home</a>
+                <a class="btn-secondary home-link" href="./" data-hash="#calculator">Get a Quote</a>
             </div>
-        </main>
+        </div>
+    </main>
 
-        <footer>
-            <p>Made with ❤️ for our furry friends | &copy; 2025 Dog Sitting At Danni's House</p>
-        </footer>
-    </div>
+    <footer>
+        © <span id="year">2025</span> Dog Sitting At Danni's House
+    </footer>
 
     <script>
-        // Dark mode functionality for 404 page
-        const darkModeToggle = document.getElementById('dark-mode-toggle');
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        
-        darkModeToggle.addEventListener('click', function() {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        });
+        // Point the links at the site's home page whatever address was mistyped.
+        // On a GitHub Pages project site the home page lives under the repository name,
+        // e.g. /Price_Calculator/, so keep the first path segment in that case.
+        (function () {
+            var home = '/';
+            var host = location.hostname;
+            var first = location.pathname.split('/')[1];
+            if (/github\.io$/i.test(host) && first) {
+                home = '/' + first + '/';
+            }
+            document.querySelectorAll('.home-link').forEach(function (a) {
+                a.setAttribute('href', home + (a.dataset.hash || ''));
+            });
+            document.getElementById('year').textContent = new Date().getFullYear();
+        })();
     </script>
 </body>
 </html>

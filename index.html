@@ -2,18 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Dog Sitting At Danni's House - Professional Pet Care Services</title>
     <meta name="description" content="Professional dog sitting and pet care services. Trusted, reliable, and personalized care for your furry family members. Get an instant quote with our cost calculator.">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-    <!-- Performance optimizations -->
-    <link rel="dns-prefetch" href="//fonts.googleapis.com">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <meta name="theme-color" content="#F0EAFF">
+
+    <!-- Apply the saved theme before first paint so dark-mode visitors never see a light flash,
+         and mark that JavaScript is running so content is only hidden for the fade-in animation
+         when the script that reveals it will actually run. -->
+    <script>
+        (function () {
+            var theme = 'light';
+            try { theme = localStorage.getItem('preferred-theme') || 'light'; } catch (e) {}
+            document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.classList.add('js');
+        })();
+    </script>
 
     <style>
         :root {
@@ -40,9 +49,19 @@
             --accent2:  #00D4C4;   /* secondary accent - poster teal */
             --green:    #00C896;   /* success states - teal variant */
             --peach:    #FFB366;   /* warning/highlight - warm orange */
-            --red:      #FF6B9D;   /* error states - soft pink */
+            --red:      #C2185B;   /* error states - deep pink (readable on lavender) */
             --yellow:   #FFD93D;   /* attention - bright yellow */
             --teal:     #00D4C4;   /* info - poster teal */
+
+            /* Text-safe accents: the pastels above are for fills and borders; these pass
+               contrast checks when used for text on the light surfaces */
+            --accent-text: #5B3FC4;
+            --green-text:  #00805F;
+            --peach-text:  #A05400;
+            --btn-gradient:  linear-gradient(135deg, #5B3FC4, #007A70);
+            --btn-text:      #FFFFFF;
+            --text-gradient: linear-gradient(135deg, #5B3FC4, #007A70);
+            --focus-ring:    rgba(91, 63, 196, 0.35);
 
             /* Navigation backgrounds */
             --nav-bg: rgba(240, 234, 255, 0.8);           /* light lavender with transparency */
@@ -78,6 +97,15 @@
             --yellow:   #FFE066;   /* attention - bright yellow */
             --teal:     #00F0DE;   /* info - bright teal */
 
+            /* On dark surfaces the pastels themselves are readable as text */
+            --accent-text: #D4C4F0;
+            --green-text:  #00E6AA;
+            --peach-text:  #FFCC80;
+            --btn-gradient:  linear-gradient(135deg, #D4C4F0, #00F0DE);
+            --btn-text:      #1A0D2E;
+            --text-gradient: linear-gradient(135deg, #D4C4F0, #00F0DE);
+            --focus-ring:    rgba(212, 196, 240, 0.45);
+
             /* Navigation backgrounds */
             --nav-bg: rgba(26, 13, 46, 0.8);           /* dark purple with transparency */
             --nav-bg-scrolled: rgba(26, 13, 46, 0.95); /* more opaque when scrolled */
@@ -87,6 +115,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -105,37 +134,50 @@
             scroll-padding-top: 72px;
         }
 
-        /* Performance optimizations */
-        * {
-            -webkit-tap-highlight-color: transparent;
+        /* Accessibility helpers */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
         }
 
-        /* Hardware acceleration for smooth animations */
-        .nav-cta,
-        .btn-primary,
-        .btn-secondary,
-        .feature-card,
-        .pricing-card,
-        .calculate-btn,
-        .action-btn {
-            transform: translateZ(0);
-            will-change: transform, box-shadow;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 1rem;
+            z-index: 200;
+            padding: 0.75rem 1.25rem;
+            background: var(--text);
+            color: var(--crust);
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
         }
 
-        /* Optimized scrolling */
-        body {
-            -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
+        .skip-link:focus {
+            top: 1rem;
         }
 
-        /* CSS Containment for better rendering performance */
-        .feature-card,
-        .pricing-card,
-        .calculator-container,
-        .modal-content {
-            contain: layout style paint;
+        :focus-visible {
+            outline: 3px solid var(--accent-text);
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
         }
 
         /* Fixed Navigation */
@@ -189,12 +231,13 @@
         }
 
         .nav-links a:hover {
-            color: var(--accent);
+            color: var(--accent-text);
         }
 
         .nav-cta {
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            color: white;
+            background: var(--btn-gradient);
+            color: var(--btn-text);
+            white-space: nowrap;
             padding: 0.5rem 1.5rem;
             border-radius: 8px;
             text-decoration: none;
@@ -266,7 +309,7 @@
         .hero h1 {
             font-size: 60px;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            background: var(--text-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -293,8 +336,8 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            color: white;
+            background: var(--btn-gradient);
+            color: var(--btn-text);
             padding: 1rem 2rem;
             border: none;
             border-radius: 12px;
@@ -359,7 +402,7 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: var(--accent);
+            color: var(--accent-text);
             margin-bottom: 1rem;
         }
 
@@ -634,19 +677,43 @@
             color: var(--text);
         }
 
-        .discount-line .item-description {
-            font-weight: 600;
-            color: var(--green);
-        }
-
-        .discount-line .item-amount {
-            color: var(--green);
+        .line-note {
+            margin-top: 0.75rem;
+            padding: 0.6rem 0.9rem;
+            border-radius: 8px;
+            background: rgba(0, 200, 150, 0.08);
+            color: var(--green-text);
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         .holiday-line .item-description,
         .holiday-line .item-amount {
             font-weight: 600;
-            color: var(--peach);
+            color: var(--peach-text);
+        }
+
+        .deposit-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            padding: 1rem 0 0;
+            font-size: 0.95rem;
+            color: var(--subtext1);
+        }
+
+        .deposit-summary.hidden {
+            display: none;
+        }
+
+        .deposit-summary div {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .deposit-summary strong {
+            color: var(--text);
         }
 
         .holiday-toggle {
@@ -717,7 +784,11 @@
         }
 
         .holiday-toggle input:focus-visible + .toggle-switch {
-            box-shadow: 0 0 0 4px rgba(184, 165, 232, 0.4);
+            box-shadow: 0 0 0 4px var(--focus-ring);
+        }
+
+        .holiday-toggle input:checked + .toggle-switch::after {
+            background: #FFFFFF;
         }
 
         .estimate-total {
@@ -739,7 +810,7 @@
         .total-amount {
             font-size: 24px;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            background: var(--text-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -753,7 +824,7 @@
         }
 
         .estimate-footer p {
-            color: var(--overlay1);
+            color: var(--subtext0);
             font-size: 14px;
             margin: 0;
             font-style: italic;
@@ -790,8 +861,8 @@
         }
 
         .action-btn.primary {
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            color: white;
+            background: var(--btn-gradient);
+            color: var(--btn-text);
             box-shadow: 0 4px 14px rgba(184, 165, 232, 0.25);
         }
 
@@ -828,6 +899,11 @@
         }
 
         @media print {
+            @page {
+                size: letter;
+                margin: 0;
+            }
+
             * {
                 box-sizing: border-box;
             }
@@ -940,6 +1016,25 @@
                 font-size: 14px;
             }
 
+            .cost-table td.indent {
+                padding-left: 2em;
+            }
+
+            .cost-table .pet-row td {
+                font-weight: bold;
+                padding-top: 12px;
+            }
+
+            .cost-table .note-row td {
+                color: #555;
+                font-style: italic;
+            }
+
+            .cost-table .deposit-row td {
+                font-size: 12px;
+                background: #fff;
+            }
+
             .print-footer {
                 margin-top: 30px;
                 padding-top: 15px;
@@ -956,117 +1051,6 @@
                 color: #666;
                 font-style: italic;
             }
-        }
-
-        .receipt-header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #333;
-            padding-bottom: 20px;
-        }
-
-        .receipt-header h1 {
-            color: #333;
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-
-        .receipt-header h2 {
-            color: #666;
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-
-        .receipt-meta {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 25px;
-        }
-
-        .receipt-info .info-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-        }
-
-        .receipt-client {
-            margin-bottom: 25px;
-            border: 1px solid #ddd;
-            padding: 15px;
-        }
-
-        .client-fields .field {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .client-fields .line {
-            border-bottom: 1px solid #333;
-            flex: 1;
-            margin-left: 10px;
-            height: 20px;
-        }
-
-        .receipt-line-items {
-            margin: 25px 0;
-        }
-
-        .receipt-line-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .receipt-total-section {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 2px solid #333;
-            text-align: right;
-        }
-
-        .receipt-final-total {
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
-        .receipt-payment {
-            margin: 25px 0;
-            border: 1px solid #ddd;
-            padding: 15px;
-        }
-
-        .payment-options {
-            margin: 10px 0;
-            display: flex;
-            gap: 20px;
-        }
-
-        .receipt-signatures {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 30px;
-        }
-
-        .sig-block {
-            text-align: center;
-            width: 200px;
-        }
-
-        .signature-line {
-            border-bottom: 1px solid #333;
-            height: 40px;
-            margin-bottom: 10px;
-        }
-
-        .receipt-terms {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-            font-size: 12px;
-            color: #666;
         }
 
         .feature-title {
@@ -1121,7 +1105,7 @@
         .pricing-amount {
             font-size: 48px;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            background: var(--text-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -1149,12 +1133,15 @@
 
         .pricing-features li::before {
             content: '✓';
-            color: var(--green);
+            color: var(--green-text);
             font-weight: bold;
+            flex-shrink: 0;
         }
 
         .pricing-card a[class*="btn-"] {
             margin-top: auto;
+            width: 100%;
+            justify-content: center;
         }
 
         /* Calculator Section */
@@ -1170,7 +1157,7 @@
             border: 1px solid var(--surface0);
             border-radius: 20px;
             padding: 3rem;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 12px 40px rgba(45, 27, 94, 0.10);
         }
 
         .form-group {
@@ -1198,8 +1185,12 @@
 
         .form-input:focus {
             outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px rgba(184, 165, 232, 0.1);
+            border-color: var(--accent-text);
+            box-shadow: 0 0 0 4px var(--focus-ring);
+        }
+
+        .form-input[readonly] {
+            cursor: pointer;
         }
 
         .dogs-container {
@@ -1217,7 +1208,8 @@
             align-items: center;
         }
 
-        .dog-info h4 {
+        .dog-name {
+            display: block;
             color: var(--text);
             margin-bottom: 0.25rem;
         }
@@ -1248,7 +1240,7 @@
             padding: 1rem;
             border: 2px dashed var(--surface1);
             background: transparent;
-            color: var(--accent);
+            color: var(--accent-text);
             border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
@@ -1257,14 +1249,14 @@
         }
 
         .add-dog-btn:hover {
-            border-color: var(--accent);
-            background: rgba(184, 165, 232, 0.05);
+            border-color: var(--accent-text);
+            background: rgba(184, 165, 232, 0.12);
         }
 
         .calculate-btn {
             width: 100%;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            color: white;
+            background: var(--btn-gradient);
+            color: var(--btn-text);
             border: none;
             padding: 1.25rem;
             border-radius: 12px;
@@ -1296,39 +1288,6 @@
             color: var(--text);
             font-size: 24px;
             margin-bottom: 1.5rem;
-        }
-
-        .breakdown-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--surface0);
-        }
-
-        .breakdown-item:last-child {
-            border-bottom: none;
-        }
-
-        .breakdown-item .label {
-            color: var(--subtext1);
-        }
-
-        .breakdown-item .value {
-            color: var(--text);
-            font-weight: 600;
-        }
-
-        .total {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 0;
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--text);
-            border-top: 2px solid var(--surface1);
-            margin-top: 1rem;
         }
 
         /* Modals */
@@ -1428,9 +1387,9 @@
         }
 
         .quick-time-btn.selected {
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            border-color: var(--accent);
-            color: white;
+            background: var(--btn-gradient);
+            border-color: transparent;
+            color: var(--btn-text);
         }
 
         /* Mobile optimization */
@@ -1545,6 +1504,76 @@
             margin-bottom: 1.5rem;
         }
 
+        .size-fieldset {
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .size-fieldset legend {
+            display: block;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.75rem;
+            font-size: 16px;
+            padding: 0;
+        }
+
+        .size-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .size-option {
+            padding: 1rem;
+            border: 2px solid var(--surface0);
+            background: var(--base);
+            color: var(--text);
+            border-radius: 8px;
+            cursor: pointer;
+            font: inherit;
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .size-option .size-name {
+            font-weight: 600;
+        }
+
+        .size-option .size-range {
+            font-size: 12px;
+            color: var(--subtext0);
+            margin-top: 0.15rem;
+        }
+
+        .size-option:hover {
+            border-color: var(--surface2);
+        }
+
+        .size-option.selected {
+            background: var(--btn-gradient);
+            border-color: transparent;
+            color: var(--btn-text);
+        }
+
+        .size-option.selected .size-range {
+            color: inherit;
+            opacity: 0.85;
+        }
+
+        .modal-hint {
+            margin-top: 1rem;
+            min-height: 1.4em;
+            font-size: 14px;
+            color: var(--subtext0);
+        }
+
+        .optional-tag {
+            font-weight: 400;
+            color: var(--subtext0);
+            margin-left: 0.35em;
+        }
+
         .modal-buttons {
             display: flex;
             gap: 1rem;
@@ -1568,8 +1597,8 @@
         }
 
         .save-btn {
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            color: white;
+            background: var(--btn-gradient);
+            color: var(--btn-text);
             border: none;
             padding: 0.75rem 1.5rem;
             border-radius: 8px;
@@ -1671,16 +1700,16 @@
         }
 
         .footer-links a:hover {
-            color: var(--accent);
+            color: var(--accent-text);
         }
 
         .footer-text {
-            color: var(--overlay0);
+            color: var(--subtext0);
             font-size: 14px;
         }
 
         /* Animations */
-        .fade-in {
+        .js .fade-in {
             opacity: 0;
             transform: translateY(24px);
             transition: opacity 0.6s ease, transform 0.6s ease;
@@ -1692,15 +1721,74 @@
         }
 
         /* Mobile Professional Results Optimization */
+        /* Mobile menu button (shown below 768px) */
+        .nav-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-menu-btn:hover {
+            background: var(--surface0);
+        }
+
+        .nav-menu-btn .icon-close,
+        .nav-menu-btn[aria-expanded="true"] .icon-open {
+            display: none;
+        }
+
+        .nav-menu-btn[aria-expanded="true"] .icon-close {
+            display: block;
+        }
+
         @media (max-width: 768px) {
-            /* Mobile Navigation - Show hamburger menu instead of hiding */
+            /* Mobile navigation: links collapse into a dropdown behind a menu button */
+            .nav-menu-btn {
+                display: flex;
+            }
+
             .nav-links {
                 display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+                padding: 0.5rem 0;
+                background: var(--nav-bg-scrolled);
+                backdrop-filter: blur(12px);
+                border-bottom: 1px solid var(--surface0);
+                box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+            }
+
+            .nav-links.open {
+                display: flex;
+            }
+
+            .nav-links a {
+                padding: 0.9rem 1.25rem;
+                min-height: 48px;
+                display: flex;
+                align-items: center;
             }
 
             nav {
                 padding: 0 1rem;
                 height: 56px;
+            }
+
+            html {
+                scroll-padding-top: 64px;
             }
 
             .nav-actions {
@@ -1758,6 +1846,7 @@
             .hero-buttons {
                 flex-direction: column;
                 align-items: center;
+                margin-bottom: 1rem;
             }
 
             .btn-primary,
@@ -1767,11 +1856,10 @@
                 justify-content: center;
             }
 
-            /* CRITICAL: Professional Mobile Results - Full Width */
             .results {
                 margin: 1.5rem 0 0 0;
-                padding: 1.5rem;
-                border-radius: 0;
+                padding: 1.25rem;
+                border-radius: 14px;
                 width: 100%;
                 box-sizing: border-box;
             }
@@ -1779,6 +1867,18 @@
             .estimate-header {
                 margin-bottom: 1.5rem;
                 padding-bottom: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+
+            .detail-label {
+                white-space: nowrap;
+                padding-right: 1rem;
+            }
+
+            .detail-value {
+                text-align: right;
             }
 
             .estimate-header h3 {
@@ -1795,6 +1895,11 @@
 
             .line-item {
                 padding: 1rem 0;
+                gap: 0.75rem;
+            }
+
+            /* Rows with a quantity × rate calculation stack; single-amount rows stay side by side */
+            .line-item:has(.item-calculation) {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.5rem;
@@ -1812,7 +1917,6 @@
             }
 
             .item-amount {
-                align-self: flex-end;
                 font-size: 16px;
                 font-weight: 700;
             }
@@ -1893,10 +1997,14 @@
             }
 
             /* Form and Calculator Mobile Optimization */
+            .calculator-section {
+                padding: 4rem 1rem;
+            }
+
             .calculator-container {
                 padding: 1.5rem;
                 margin: 0;
-                border-radius: 0;
+                border-radius: 14px;
                 width: 100%;
             }
 
@@ -1950,18 +2058,11 @@
             }
 
             /* Mobile line item visual hierarchy */
-            .line-item:not(.per-pet-item):not(.discount-line):not(.holiday-line) > .item-description::after {
+            .line-item:has(.item-calculation) > .item-description::after {
                 content: ':';
             }
 
             .line-item .item-calculation .quantity {
-                font-weight: 700;
-                color: var(--accent);
-            }
-
-            .line-item .item-calculation .amount,
-            .line-item .item-amount {
-                color: var(--accent);
                 font-weight: 700;
             }
 
@@ -1989,7 +2090,6 @@
             .detail-value {
                 font-size: 16px;
                 font-weight: 700;
-                color: var(--accent);
             }
         }
 
@@ -2003,16 +2103,22 @@
             }
 
             .calculator-container {
-                padding: 2rem 1.5rem;
+                padding: 1.5rem 1rem;
+            }
+
+            .results {
+                padding: 1rem;
             }
         }
     </style>
 </head>
-<body>
+<body id="top">
+    <a class="skip-link" href="#main">Skip to content</a>
+
     <!-- Fixed Navigation -->
-    <nav>
-        <a href="#" class="nav-logo">
-            <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" fill="none">
+    <nav aria-label="Main">
+        <a href="#top" class="nav-logo" aria-label="Danni's House — back to top">
+            <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" fill="none" aria-hidden="true">
                 <defs>
                     <linearGradient id="pawGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" style="stop-color:#B8A5E8;stop-opacity:1" />
@@ -2028,14 +2134,14 @@
             </svg>
             Danni's House
         </a>
-        <div class="nav-links">
+        <div class="nav-links" id="nav-links">
             <a href="#services">Services</a>
             <a href="#pricing">Pricing</a>
             <a href="#calculator">Calculator</a>
             <a href="#faq">FAQ</a>
         </div>
         <div class="nav-actions">
-            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+            <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false">
                 <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="5"/>
                     <line x1="12" y1="1" x2="12" y2="3"/>
@@ -2051,31 +2157,43 @@
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
                 </svg>
             </button>
-            <a href="#calculator" class="nav-cta">Get Quote</a>
+            <a href="#calculator" class="nav-cta">Get a Quote</a>
+            <button type="button" id="nav-menu-btn" class="nav-menu-btn" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
+                <svg class="icon-open" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+                <svg class="icon-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
         </div>
     </nav>
 
+    <main id="main">
     <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-content fade-in">
-            <h1>Professional Pet Care Services</h1>
+        <div class="hero-content">
+            <h1>Dog Sitting in a Real Home</h1>
             <p class="hero-subtitle">
-                Trusted, reliable dog sitting in a loving home environment.
-                Your furry family members deserve the best care while you're away.
+                Overnight boarding in a comfortable home, with simple day-based pricing and no hidden fees.
+                Get an instant estimate for your dog's stay below.
             </p>
             <div class="hero-buttons">
                 <a href="#calculator" class="btn-primary">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;" aria-hidden="true">
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
                         <rect x="8" y="8" width="2" height="2" fill="currentColor"/>
                         <rect x="14" y="8" width="2" height="2" fill="currentColor"/>
                         <rect x="8" y="14" width="2" height="2" fill="currentColor"/>
                         <rect x="14" y="14" width="2" height="2" fill="currentColor"/>
                     </svg>
-                    Calculate Costs
+                    Get a Quote
                 </a>
                 <a href="#services" class="btn-secondary">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;" aria-hidden="true">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                         <polyline points="14,2 14,8 20,8"/>
                         <line x1="16" y1="13" x2="8" y2="13"/>
@@ -2094,108 +2212,69 @@
             <div class="section-label">Our Services</div>
             <h2 class="section-title">Why Choose Danni's House</h2>
             <p class="section-description">
-                We provide personalized, professional pet care with transparent pricing and genuine love for every furry guest.
+                Personal, attentive care in a home setting, with pricing you can see up front.
             </p>
         </div>
         <div class="features-grid">
             <div class="feature-card fade-in">
                 <div class="feature-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#homeGradient)" stroke-width="2">
-                        <defs>
-                            <linearGradient id="homeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#B8A5E8;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#00D4C4;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent-text)" aria-hidden="true" stroke-width="2">
                         <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                         <polyline points="9,22 9,12 15,12 15,22"/>
                     </svg>
                 </div>
                 <h3 class="feature-title">Home Environment</h3>
-                <p class="feature-description">Your pets stay in a comfortable, loving home setting rather than a sterile facility. They'll have access to cozy spaces, yards, and personal attention.</p>
+                <p class="feature-description">Your dog stays in a comfortable home rather than a kennel, with cozy places to rest, room to play, and someone paying attention to them.</p>
             </div>
             <div class="feature-card fade-in">
                 <div class="feature-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#pricingGradient)" stroke-width="2">
-                        <defs>
-                            <linearGradient id="pricingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#B8A5E8;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#00D4C4;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent-text)" aria-hidden="true" stroke-width="2">
                         <line x1="12" y1="1" x2="12" y2="23"/>
                         <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                     </svg>
                 </div>
                 <h3 class="feature-title">Transparent Pricing</h3>
-                <p class="feature-description">No hidden fees or surprise charges. Our calculator shows exactly what you'll pay with clear breakdowns for all services, multi-pet discounts, and holiday fees.</p>
+                <p class="feature-description">No hidden fees or surprise charges. Every estimate shows a full breakdown: daily rate, extra hours, the multi-pet discount, and any holiday fee.</p>
             </div>
             <div class="feature-card fade-in">
                 <div class="feature-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#quotesGradient)" stroke-width="2">
-                        <defs>
-                            <linearGradient id="quotesGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#B8A5E8;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#00D4C4;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent-text)" aria-hidden="true" stroke-width="2">
                         <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
                         <line x1="8" y1="21" x2="16" y2="21"/>
                         <line x1="12" y1="17" x2="12" y2="21"/>
                     </svg>
                 </div>
                 <h3 class="feature-title">Instant Quotes</h3>
-                <p class="feature-description">Get accurate pricing in seconds with our advanced calculator. Add multiple pets, select dates, and receive detailed cost breakdowns immediately.</p>
+                <p class="feature-description">Choose your dates, add your pets, and see the full cost in seconds. Print the estimate or save the stay to your calendar.</p>
             </div>
             <div class="feature-card fade-in">
                 <div class="feature-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#scheduleGradient)" stroke-width="2">
-                        <defs>
-                            <linearGradient id="scheduleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#B8A5E8;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#00D4C4;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent-text)" aria-hidden="true" stroke-width="2">
                         <circle cx="12" cy="12" r="10"/>
                         <polyline points="12,6 12,12 16,14"/>
                     </svg>
                 </div>
                 <h3 class="feature-title">Flexible Scheduling</h3>
-                <p class="feature-description">24-hour boarding, extended stays, and flexible pickup times. We work with your schedule to provide seamless pet care solutions.</p>
+                <p class="feature-description">Overnight stays, longer boarding, and flexible drop-off and pick-up times. Extra hours are billed by the hour, never rounded up to a full day.</p>
             </div>
             <div class="feature-card fade-in">
                 <div class="feature-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#careGradient)" stroke-width="2">
-                        <defs>
-                            <linearGradient id="careGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#B8A5E8;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#00D4C4;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent-text)" aria-hidden="true" stroke-width="2">
                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                     </svg>
                 </div>
                 <h3 class="feature-title">Personalized Care</h3>
-                <p class="feature-description">Every pet receives individualized attention based on their needs, personality, and preferences. Your furry friends are treated like family.</p>
+                <p class="feature-description">Every dog gets attention suited to their needs and personality: their own food, their routine, and their favorite things from home.</p>
             </div>
             <div class="feature-card fade-in">
                 <div class="feature-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="url(#reliableGradient)" stroke-width="2">
-                        <defs>
-                            <linearGradient id="reliableGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#B8A5E8;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#00D4C4;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14,2 14,8 20,8"/>
-                        <line x1="16" y1="13" x2="8" y2="13"/>
-                        <line x1="16" y1="17" x2="8" y2="17"/>
-                        <polyline points="10,9 9,9 8,9"/>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent-text)" aria-hidden="true" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <polyline points="9,12 11,14 15,10"/>
                     </svg>
                 </div>
                 <h3 class="feature-title">Reliable Care</h3>
-                <p class="feature-description">Experienced pet care with detailed intake processes, emergency protocols, and regular updates for complete peace of mind while you're away.</p>
+                <p class="feature-description">Care instructions and vet details are collected at drop-off, and you get regular updates with photos so you always know how your dog is doing.</p>
             </div>
         </div>
     </section>
@@ -2206,55 +2285,55 @@
             <div class="section-label">Pricing</div>
             <h2 class="section-title">Simple, Transparent Rates</h2>
             <p class="section-description">
-                No complex fee structures or hidden charges. Just honest, upfront pricing for quality pet care.
-                <strong>$50 deposit required for stays 3+ days.</strong> Cash preferred, Venmo accepted.
+                No complex fee structures or hidden charges. Just honest, upfront pricing.
+                <strong>A <span class="deposit-value">$50</span> deposit is due at booking for stays of <span class="deposit-days-value">3</span> or more days.</strong> Cash preferred, Venmo accepted.
                 Stays over a holiday add a <span class="holiday-fee-value">5%</span> holiday fee to the total.
             </p>
         </div>
         <div class="pricing-grid">
             <div class="pricing-card fade-in">
                 <h3 class="pricing-title">24-Hour Boarding</h3>
-                <div class="pricing-amount">$55</div>
-                <div class="pricing-period">per 24-hour period</div>
+                <div class="pricing-amount nightly-rate-value">$55</div>
+                <div class="pricing-period">per 24-hour day</div>
                 <ul class="pricing-features">
-                    <li>Overnight care in home environment</li>
+                    <li>Overnight care in a home environment</li>
                     <li>Feeding (food provided by you) and walks</li>
                     <li>Playtime and companionship</li>
                     <li>Secure, comfortable sleeping area</li>
                     <li>Updates and photos</li>
                 </ul>
-                <a href="#calculator" class="btn-primary" style="width: 100%; text-align: center; text-decoration: none;">
-                    Calculate Total
+                <a href="#calculator" class="btn-primary">
+                    Get a Quote
                 </a>
             </div>
             <div class="pricing-card fade-in">
-                <h3 class="pricing-title">Extended Hours</h3>
-                <div class="pricing-amount">$5</div>
-                <div class="pricing-period">per hour</div>
+                <h3 class="pricing-title">Extra Hours</h3>
+                <div class="pricing-amount hourly-rate-value">$5</div>
+                <div class="pricing-period">per hour beyond each 24-hour day</div>
                 <ul class="pricing-features">
-                    <li>Flexible pickup and drop-off times</li>
-                    <li>Early morning or late evening care</li>
-                    <li>Automatic conversion to 24-hour rate</li>
-                    <li>Same quality care throughout</li>
+                    <li>Flexible drop-off and pick-up times</li>
+                    <li>Rounded up to the next full hour</li>
+                    <li><span>Never more than the daily rate: after <span class="hour-cap-value">10</span> extra hours it simply becomes another day</span></li>
+                    <li>Same care throughout the stay</li>
                     <li>No rush fees or penalties</li>
                 </ul>
-                <a href="#calculator" class="btn-secondary" style="width: 100%; text-align: center; text-decoration: none;">
-                    Get Quote
+                <a href="#calculator" class="btn-secondary">
+                    Get a Quote
                 </a>
             </div>
             <div class="pricing-card fade-in">
                 <h3 class="pricing-title">Multiple Pets</h3>
-                <div class="pricing-amount">20% off</div>
+                <div class="pricing-amount"><span class="pet-discount-value">20%</span> off</div>
                 <div class="pricing-period">each additional pet</div>
                 <ul class="pricing-features">
-                    <li>Reduced rate for additional pets</li>
-                    <li>All pets stay together</li>
+                    <li><span>First pet at the full rate, each additional pet <span class="pet-discount-value">20%</span> off</span></li>
+                    <li>Applies to both the daily rate and extra hours</li>
+                    <li>Your pets stay together</li>
                     <li>Individual attention for each pet</li>
-                    <li>Same care standards for all</li>
-                    <li>Family discount applied automatically</li>
+                    <li>Multi-pet discount applied automatically</li>
                 </ul>
-                <a href="#calculator" class="btn-secondary" style="width: 100%; text-align: center; text-decoration: none;">
-                    Add Pets
+                <a href="#calculator" class="btn-secondary">
+                    Get a Quote
                 </a>
             </div>
         </div>
@@ -2274,7 +2353,7 @@
             <form id="calculator-form">
                 <div class="form-group">
                     <label for="dropoff-date">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem; vertical-align: text-bottom;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem; vertical-align: text-bottom;" aria-hidden="true">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                             <line x1="16" y1="2" x2="16" y2="6"/>
                             <line x1="8" y1="2" x2="8" y2="6"/>
@@ -2282,13 +2361,13 @@
                         </svg>
                         Drop-off Date & Time
                     </label>
-                    <input type="text" id="dropoff-date" class="form-input" readonly placeholder="Select drop-off date and time" required>
-                    <div class="input-error hidden" id="dropoff-error">Please select a drop-off date and time</div>
+                    <input type="text" id="dropoff-date" class="form-input" readonly placeholder="Select drop-off date and time" aria-haspopup="dialog" aria-describedby="dropoff-error">
+                    <div class="input-error hidden" id="dropoff-error" role="alert">Please select a drop-off date and time</div>
                 </div>
 
                 <div class="form-group">
                     <label for="pickup-date">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem; vertical-align: text-bottom;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem; vertical-align: text-bottom;" aria-hidden="true">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                             <line x1="16" y1="2" x2="16" y2="6"/>
                             <line x1="8" y1="2" x2="8" y2="6"/>
@@ -2296,13 +2375,13 @@
                         </svg>
                         Pick-up Date & Time
                     </label>
-                    <input type="text" id="pickup-date" class="form-input" readonly placeholder="Select pick-up date and time" required>
-                    <div class="input-error hidden" id="pickup-error">Please select a pick-up date and time</div>
+                    <input type="text" id="pickup-date" class="form-input" readonly placeholder="Select pick-up date and time" aria-haspopup="dialog" aria-describedby="pickup-error">
+                    <div class="input-error hidden" id="pickup-error" role="alert">Please select a pick-up date and time</div>
                 </div>
 
                 <div class="form-group">
-                    <label>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem; vertical-align: text-bottom;">
+                    <label id="pets-label" for="add-dog-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem; vertical-align: text-bottom;" aria-hidden="true">
                             <circle cx="12" cy="12" r="10"/>
                             <circle cx="12" cy="10" r="3"/>
                             <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/>
@@ -2312,15 +2391,15 @@
                     <div id="dogs-container" class="dogs-container">
                         <!-- Dog cards will be added here -->
                     </div>
-                    <button type="button" id="add-dog-btn" class="add-dog-btn">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                    <button type="button" id="add-dog-btn" class="add-dog-btn" aria-describedby="pets-error">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;" aria-hidden="true">
                             <circle cx="12" cy="12" r="10"/>
                             <line x1="12" y1="8" x2="12" y2="16"/>
                             <line x1="8" y1="12" x2="16" y2="12"/>
                         </svg>
                         Add a Pet
                     </button>
-                    <div class="input-error hidden" id="pets-error">Please add at least one pet</div>
+                    <div class="input-error hidden" id="pets-error" role="alert">Please add at least one pet</div>
                 </div>
 
                 <div class="form-group">
@@ -2329,7 +2408,7 @@
                             <span>Holiday Stay</span>
                             <span class="holiday-toggle-hint" id="holiday-toggle-hint">Adds a holiday fee to the stay</span>
                         </span>
-                        <input type="checkbox" id="holiday-toggle" role="switch">
+                        <input type="checkbox" id="holiday-toggle" role="switch" aria-checked="false">
                         <span class="toggle-switch" aria-hidden="true"></span>
                     </label>
                 </div>
@@ -2337,7 +2416,7 @@
                 <button type="submit" class="calculate-btn">
                     <span class="btn-text">Calculate Total Cost</span>
                     <span class="btn-loading hidden">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="loading-spinner">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="loading-spinner" aria-hidden="true">
                             <path d="M21 12a9 9 0 11-6.219-8.56"/>
                         </svg>
                         Calculating...
@@ -2345,10 +2424,12 @@
                 </button>
             </form>
 
-            <div id="results" class="results hidden">
+            <div id="calc-status" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+
+            <div id="results" class="results hidden" tabindex="-1" aria-labelledby="results-title">
                 <div class="estimate-header">
-                    <h3>Service Estimate</h3>
-                    <div class="estimate-number">Quote #<span id="quote-number">001</span></div>
+                    <h3 id="results-title">Your Estimate</h3>
+                    <div class="estimate-number">Prepared <span id="estimate-date">—</span></div>
                 </div>
 
                 <div class="estimate-details">
@@ -2372,10 +2453,10 @@
 
                 <div class="line-items">
                     <div class="line-item" id="twenty-four-hour-row">
-                        <div class="item-description">24-Hour Boarding Sessions</div>
+                        <div class="item-description">24-Hour Boarding Days</div>
                         <div class="item-calculation">
                             <span class="quantity" id="twenty-four-hour-count">0</span>
-                            <span class="rate">× $55.00</span>
+                            <span class="rate" id="twenty-four-hour-rate">× $55.00</span>
                             <span class="amount" id="twenty-four-hour-cost">$0.00</span>
                         </div>
                     </div>
@@ -2383,19 +2464,18 @@
                         <div class="item-description">Additional Hours</div>
                         <div class="item-calculation">
                             <span class="quantity" id="extra-hours-count">0</span>
-                            <span class="rate">× $5.00</span>
+                            <span class="rate" id="extra-hours-rate">× $5.00</span>
                             <span class="amount" id="extra-hours-cost">$0.00</span>
                         </div>
                     </div>
                     <div class="line-item subtotal-line" id="base-subtotal-row">
-                        <div class="item-description">Rate per pet</div>
+                        <div class="item-description">Subtotal</div>
                         <div class="item-amount" id="base-subtotal">$0.00</div>
                     </div>
                     <div class="per-pet-header" id="per-pet-header" style="display: none;">Per-Pet Pricing</div>
                     <div id="per-pet-breakdown"></div>
-                    <div class="line-item discount-line" id="multi-dog-row" style="display: none;">
-                        <div class="item-description">Multi-Pet Discount — you save</div>
-                        <div class="item-amount"><span id="multi-dog-surcharge">$0.00</span></div>
+                    <div class="line-note" id="multi-dog-row" style="display: none;">
+                        Multi-pet discount already applied above — you save <strong id="multi-dog-surcharge">$0.00</strong>
                     </div>
                     <div class="line-item holiday-line" id="holiday-fee-row" style="display: none;">
                         <div class="item-description">Holiday Fee (<span class="holiday-fee-value">5%</span>)</div>
@@ -2404,17 +2484,22 @@
                 </div>
 
                 <div class="estimate-total">
-                    <div class="total-label">Total Estimated Cost</div>
+                    <div class="total-label">Estimated Total</div>
                     <div class="total-amount" id="total-cost">$0.00</div>
                 </div>
 
+                <div class="deposit-summary hidden" id="deposit-row">
+                    <div><span>Deposit due at booking</span><strong id="deposit-due">$0.00</strong></div>
+                    <div><span>Balance due at pick-up</span><strong id="balance-due">$0.00</strong></div>
+                </div>
+
                 <div class="estimate-footer">
-                    <p>This estimate is valid for 30 days. Final pricing confirmed upon booking.</p>
+                    <p>This estimate is valid for 30 days. Final pricing is confirmed at booking.</p>
                 </div>
 
                 <div class="estimate-actions">
                     <button type="button" id="print-estimate-btn" class="action-btn primary">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;" aria-hidden="true">
                             <polyline points="6,9 6,2 18,2 18,9"/>
                             <path d="M6,18H4a2,2,0,0,1-2-2V11a2,2,0,0,1,2-2H20a2,2,0,0,1,2,2v5a2,2,0,0,1-2,2H18"/>
                             <polyline points="6,14 18,14 18,22 6,22 6,14"/>
@@ -2422,7 +2507,7 @@
                         Print Estimate
                     </button>
                     <button type="button" id="save-calendar-btn" class="action-btn secondary">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;" aria-hidden="true">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                             <line x1="16" y1="2" x2="16" y2="6"/>
                             <line x1="8" y1="2" x2="8" y2="6"/>
@@ -2431,7 +2516,7 @@
                         Save to Calendar
                     </button>
                     <button type="button" id="clear-data-btn" class="action-btn tertiary">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;" aria-hidden="true">
                             <polyline points="3,6 5,6 21,6"/>
                             <path d="M19,6V20a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6M8,6V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
                         </svg>
@@ -2448,89 +2533,90 @@
             <div class="section-label">FAQ</div>
             <h2 class="section-title">Frequently Asked Questions</h2>
             <p class="section-description">
-                Get answers to common questions about our pet care services and pricing.
+                Answers to common questions about the stay and the pricing.
             </p>
         </div>
         <div class="faq-container">
             <div class="faq-item fade-in">
                 <button class="faq-question">
                     How does 24-hour boarding work?
-                    <span class="faq-icon">+</span>
+                    <span class="faq-icon" aria-hidden="true">+</span>
                 </button>
                 <div class="faq-answer">
                     <div class="faq-answer-content">
-                        24-hour boarding means your pet stays overnight in our home environment. For example, if you drop off at 3pm and pick up at 3pm the next day, that's one 24-hour period at $55. Any extra time is charged at $5 per hour.
+                        Each 24-hour period from drop-off counts as one day at <span class="nightly-rate-value">$55</span>. For example, drop off at 3pm and pick up at 3pm the next day and that's one day. Any extra time beyond a full day is charged at <span class="hourly-rate-value">$5</span> per hour, rounded up to the next hour. Extra hours never cost more than a day: once they would, the calculator counts another full day instead.
                     </div>
                 </div>
             </div>
             <div class="faq-item fade-in">
                 <button class="faq-question">
                     What's included in the boarding rate?
-                    <span class="faq-icon">+</span>
+                    <span class="faq-icon" aria-hidden="true">+</span>
                 </button>
                 <div class="faq-answer">
                     <div class="faq-answer-content">
-                        Your pet gets feeding (using the food you provide), walks, playtime, companionship, a comfortable sleeping area, and regular updates with photos. We treat every pet like a member of our family.
+                        Feeding (using the food you provide), walks, playtime, companionship, a comfortable sleeping area, and regular updates with photos. Every dog is treated like part of the household.
                     </div>
                 </div>
             </div>
             <div class="faq-item fade-in">
                 <button class="faq-question">
                     How does multi-pet pricing work?
-                    <span class="faq-icon">+</span>
+                    <span class="faq-icon" aria-hidden="true">+</span>
                 </button>
                 <div class="faq-answer">
                     <div class="faq-answer-content">
-                        The first pet pays full price, and each additional pet gets 20% off. For example, if one pet costs $55, a second pet is $44 (20% off), so two pets would cost $99 total.
+                        The first pet pays full price, and each additional pet gets <span class="pet-discount-value">20%</span> off both the daily rate and any extra hours. For example, one pet for one day is <span class="nightly-rate-value">$55</span>, a second pet is <span class="second-pet-rate-value">$44</span>, so two pets for one day come to <span class="two-pet-total-value">$99</span>.
                     </div>
                 </div>
             </div>
             <div class="faq-item fade-in">
                 <button class="faq-question">
                     Is there a holiday fee?
-                    <span class="faq-icon">+</span>
+                    <span class="faq-icon" aria-hidden="true">+</span>
                 </button>
                 <div class="faq-answer">
                     <div class="faq-answer-content">
-                        Yes. If your pet's stay includes a holiday, a <span class="holiday-fee-value">5%</span> holiday fee is added on top of the total for the stay (after any multi-pet discount). For example, a $200 stay over a holiday would be $210. Just turn on "Holiday Stay" in the calculator to include it in your estimate.
+                        Yes. If the stay includes a holiday, a <span class="holiday-fee-value">5%</span> holiday fee is added on top of the total for the stay (after any multi-pet discount). For example, a $200 stay over a holiday comes to $210. Turn on "Holiday Stay" in the calculator to include it in your estimate.
                     </div>
                 </div>
             </div>
             <div class="faq-item fade-in">
                 <button class="faq-question">
                     What should I bring for my pet?
-                    <span class="faq-icon">+</span>
+                    <span class="faq-icon" aria-hidden="true">+</span>
                 </button>
                 <div class="faq-answer">
                     <div class="faq-answer-content">
-                        Please bring your pet's food, any medications, favorite toys or blankets, and detailed care instructions. We'll discuss specific needs during our initial consultation.
+                        Your pet's food, any medications, a favorite toy or blanket, and written care instructions including your vet's details. Anything specific to your dog's routine is worth mentioning at drop-off.
                     </div>
                 </div>
             </div>
             <div class="faq-item fade-in">
                 <button class="faq-question">
                     Is there a deposit required?
-                    <span class="faq-icon">+</span>
+                    <span class="faq-icon" aria-hidden="true">+</span>
                 </button>
                 <div class="faq-answer">
                     <div class="faq-answer-content">
-                        Yes, we require a $50 deposit for stays of 3 days or longer. This helps secure your booking and covers any preparation needed for extended stays.
+                        Yes, for stays of <span class="deposit-days-value">3</span> or more days a <span class="deposit-value">$50</span> deposit is due at booking. It holds your dates and counts toward the total, so the remaining balance is due at pick-up. The calculator shows the deposit and balance whenever a stay qualifies.
                     </div>
                 </div>
             </div>
             <div class="faq-item fade-in">
                 <button class="faq-question">
                     Can I get updates while I'm away?
-                    <span class="faq-icon">+</span>
+                    <span class="faq-icon" aria-hidden="true">+</span>
                 </button>
                 <div class="faq-answer">
                     <div class="faq-answer-content">
-                        Absolutely! We provide regular updates with photos and messages about your pet's activities, meals, and mood. You'll have peace of mind knowing how your furry friend is doing.
+                        Yes. You'll get regular updates with photos and messages about your dog's activities, meals, and mood, so you always know how they're doing.
                     </div>
                 </div>
             </div>
         </div>
     </section>
+    </main>
 
     <!-- Footer -->
     <footer>
@@ -2542,32 +2628,40 @@
                 <a href="#faq">FAQ</a>
             </div>
             <p class="footer-text">
-                Made with care for our furry friends | © 2025 Dog Sitting At Danni's House
+                Made with care for every dog who stays with us | © <span class="current-year">2025</span> Dog Sitting At Danni's House
             </p>
         </div>
     </footer>
 
     <!-- Print Receipt Content (Hidden in normal view) -->
-    <div id="print-receipt" class="print-receipt">
+    <div id="print-receipt" class="print-receipt" aria-hidden="true">
         <div class="print-header">
             <div class="company-info">
                 <h1>Dog Sitting At Danni's House</h1>
-                <p>Professional Pet Care Services</p>
+                <p>Home Dog Boarding</p>
             </div>
             <div class="quote-info">
-                <div><strong>Quote #<span id="receipt-quote-number">—</span></strong></div>
-                <div><span id="receipt-date">—</span></div>
+                <div><strong>Estimate</strong></div>
+                <div>Prepared <span id="receipt-date">—</span></div>
             </div>
         </div>
 
         <div class="service-summary">
             <div class="summary-row">
-                <span><strong>Service Period:</strong></span>
-                <span><span id="receipt-dropoff">—</span> to <span id="receipt-pickup">—</span></span>
+                <span><strong>Drop-off:</strong></span>
+                <span id="receipt-dropoff">—</span>
             </div>
             <div class="summary-row">
-                <span><strong>Number of Pets:</strong></span>
-                <span id="receipt-num-pets">—</span>
+                <span><strong>Pick-up:</strong></span>
+                <span id="receipt-pickup">—</span>
+            </div>
+            <div class="summary-row">
+                <span><strong>Length of stay:</strong></span>
+                <span id="receipt-period">—</span>
+            </div>
+            <div class="summary-row">
+                <span><strong>Pets:</strong></span>
+                <span id="receipt-pets">—</span>
             </div>
         </div>
 
@@ -2585,34 +2679,42 @@
             </tbody>
             <tfoot>
                 <tr class="total-row">
-                    <td colspan="3"><strong>Total Estimated Cost</strong></td>
+                    <td colspan="3"><strong>Estimated Total</strong></td>
                     <td><strong id="receipt-total">$0.00</strong></td>
+                </tr>
+                <tr class="deposit-row" style="display: none;">
+                    <td colspan="3">Deposit due at booking</td>
+                    <td id="receipt-deposit">$0.00</td>
+                </tr>
+                <tr class="deposit-row" style="display: none;">
+                    <td colspan="3">Balance due at pick-up</td>
+                    <td id="receipt-balance">$0.00</td>
                 </tr>
             </tfoot>
         </table>
 
         <div class="print-footer">
             <div class="payment-note">
-                <strong>Payment:</strong> Cash preferred, Venmo accepted. $50 deposit for 3+ day stays.
+                <strong>Payment:</strong> <span id="receipt-payment-note">Cash preferred, Venmo accepted.</span>
             </div>
             <div class="validity-note">
-                Valid for 30 days • Payment due at pickup • Contact for booking confirmation
+                This estimate is valid for 30 days. Final pricing is confirmed at booking.
             </div>
         </div>
     </div>
 
     <!-- Date/Time Picker Modal -->
-    <div id="datetime-modal" class="modal hidden">
+    <div id="datetime-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="datetime-title">
         <div class="modal-content datetime-modal">
             <div class="modal-header">
-                <h3>Select Date & Time</h3>
-                <p class="modal-subtitle">Choose your preferred drop-off or pick-up time</p>
+                <h3 id="datetime-title">Select Date & Time</h3>
+                <p class="modal-subtitle" id="datetime-subtitle">Choose a date and time</p>
             </div>
 
             <div class="datetime-form">
                 <div class="form-group">
                     <label for="date-picker">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;" aria-hidden="true">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                             <line x1="16" y1="2" x2="16" y2="6"/>
                             <line x1="8" y1="2" x2="8" y2="6"/>
@@ -2625,7 +2727,7 @@
 
                 <div class="form-group">
                     <label for="time-picker">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;" aria-hidden="true">
                             <circle cx="12" cy="12" r="10"/>
                             <polyline points="12,6 12,12 16,14"/>
                         </svg>
@@ -2635,12 +2737,12 @@
                 </div>
 
                 <div class="quick-times">
-                    <label class="quick-times-label">Quick Times:</label>
-                    <div class="quick-time-buttons">
-                        <button type="button" class="quick-time-btn" data-time="09:00">9:00 AM</button>
-                        <button type="button" class="quick-time-btn" data-time="12:00">12:00 PM</button>
-                        <button type="button" class="quick-time-btn" data-time="17:00">5:00 PM</button>
-                        <button type="button" class="quick-time-btn" data-time="18:00">6:00 PM</button>
+                    <span class="quick-times-label" id="quick-times-label">Quick times:</span>
+                    <div class="quick-time-buttons" role="group" aria-labelledby="quick-times-label">
+                        <button type="button" class="quick-time-btn" data-time="09:00" aria-pressed="false">9:00 AM</button>
+                        <button type="button" class="quick-time-btn" data-time="12:00" aria-pressed="false">12:00 PM</button>
+                        <button type="button" class="quick-time-btn" data-time="17:00" aria-pressed="false">5:00 PM</button>
+                        <button type="button" class="quick-time-btn" data-time="18:00" aria-pressed="false">6:00 PM</button>
                     </div>
                 </div>
             </div>
@@ -2653,34 +2755,37 @@
     </div>
 
     <!-- Dog Modal -->
-    <div id="dog-modal" class="modal hidden">
+    <div id="dog-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="dog-modal-title">
         <div class="modal-content">
-            <h3>Add Your Pet</h3>
+            <h3 id="dog-modal-title">Add Your Pet</h3>
             <div class="form-group">
-                <label for="dog-name">Pet's Name</label>
-                <input type="text" id="dog-name" class="form-input" placeholder="Enter your pet's name" required>
+                <label for="dog-name">Pet's name</label>
+                <input type="text" id="dog-name" class="form-input" placeholder="e.g., Max" autocomplete="off" required>
             </div>
             <div class="form-group">
-                <label for="dog-breed">Breed</label>
-                <input type="text" id="dog-breed" class="form-input" placeholder="Enter breed (e.g., Golden Retriever, Mixed)">
+                <label for="dog-breed">Breed <span class="optional-tag">(optional)</span></label>
+                <input type="text" id="dog-breed" class="form-input" placeholder="e.g., Golden Retriever" autocomplete="off">
             </div>
             <div class="form-group">
-                <label>Size</label>
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 0.5rem;">
-                    <button type="button" class="size-option" data-size="small" style="padding: 1rem; border: 2px solid var(--surface0); background: var(--base); color: var(--text); border-radius: 8px; cursor: pointer;">
-                        <div style="font-weight: 600;">Small</div>
-                        <div style="font-size: 12px; color: var(--subtext0);">&lt; 25 lbs</div>
-                    </button>
-                    <button type="button" class="size-option" data-size="medium" style="padding: 1rem; border: 2px solid var(--surface0); background: var(--base); color: var(--text); border-radius: 8px; cursor: pointer;">
-                        <div style="font-weight: 600;">Medium</div>
-                        <div style="font-size: 12px; color: var(--subtext0);">25-60 lbs</div>
-                    </button>
-                    <button type="button" class="size-option" data-size="large" style="padding: 1rem; border: 2px solid var(--surface0); background: var(--base); color: var(--text); border-radius: 8px; cursor: pointer;">
-                        <div style="font-weight: 600;">Large</div>
-                        <div style="font-size: 12px; color: var(--subtext0);">&gt; 60 lbs</div>
-                    </button>
-                </div>
+                <fieldset class="size-fieldset">
+                    <legend>Size</legend>
+                    <div class="size-grid">
+                        <button type="button" class="size-option" data-size="small" aria-pressed="false">
+                            <div class="size-name">Small</div>
+                            <div class="size-range">under 25 lbs</div>
+                        </button>
+                        <button type="button" class="size-option" data-size="medium" aria-pressed="false">
+                            <div class="size-name">Medium</div>
+                            <div class="size-range">25–60 lbs</div>
+                        </button>
+                        <button type="button" class="size-option" data-size="large" aria-pressed="false">
+                            <div class="size-name">Large</div>
+                            <div class="size-range">over 60 lbs</div>
+                        </button>
+                    </div>
+                </fieldset>
             </div>
+            <p class="modal-hint" id="dog-modal-hint" aria-live="polite"></p>
             <div class="modal-buttons">
                 <button type="button" id="cancel-dog-btn" class="cancel-btn">Cancel</button>
                 <button type="button" id="save-dog-btn" class="save-btn">Add Pet</button>
