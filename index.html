@@ -643,6 +643,83 @@
             color: var(--green);
         }
 
+        .holiday-line .item-description,
+        .holiday-line .item-amount {
+            font-weight: 600;
+            color: var(--peach);
+        }
+
+        .holiday-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--surface0);
+            border-radius: 12px;
+            background: var(--base);
+            cursor: pointer;
+        }
+
+        .form-group label.holiday-toggle {
+            display: flex;
+            margin-bottom: 0;
+        }
+
+        .holiday-toggle-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .holiday-toggle-hint {
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: var(--subtext0);
+        }
+
+        .holiday-toggle input {
+            position: absolute;
+            opacity: 0;
+            width: 1px;
+            height: 1px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            flex-shrink: 0;
+            width: 48px;
+            height: 28px;
+            border-radius: 14px;
+            background: var(--surface1);
+            transition: background 0.2s ease;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--mantle);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+            transition: transform 0.2s ease;
+        }
+
+        .holiday-toggle input:checked + .toggle-switch {
+            background: var(--accent2);
+        }
+
+        .holiday-toggle input:checked + .toggle-switch::after {
+            transform: translateX(20px);
+        }
+
+        .holiday-toggle input:focus-visible + .toggle-switch {
+            box-shadow: 0 0 0 4px rgba(184, 165, 232, 0.4);
+        }
+
         .estimate-total {
             display: flex;
             justify-content: space-between;
@@ -1873,7 +1950,7 @@
             }
 
             /* Mobile line item visual hierarchy */
-            .line-item:not(.per-pet-item):not(.discount-line) > .item-description::after {
+            .line-item:not(.per-pet-item):not(.discount-line):not(.holiday-line) > .item-description::after {
                 content: ':';
             }
 
@@ -2245,6 +2322,17 @@
                     <div class="input-error hidden" id="pets-error">Please add at least one pet</div>
                 </div>
 
+                <div class="form-group">
+                    <label for="holiday-toggle" class="holiday-toggle">
+                        <span class="holiday-toggle-text">
+                            <span>Holiday Stay</span>
+                            <span class="holiday-toggle-hint" id="holiday-toggle-hint">Adds a holiday fee to the stay</span>
+                        </span>
+                        <input type="checkbox" id="holiday-toggle" role="switch">
+                        <span class="toggle-switch" aria-hidden="true"></span>
+                    </label>
+                </div>
+
                 <button type="submit" class="calculate-btn">
                     <span class="btn-text">Calculate Total Cost</span>
                     <span class="btn-loading hidden">
@@ -2307,6 +2395,10 @@
                     <div class="line-item discount-line" id="multi-dog-row" style="display: none;">
                         <div class="item-description">Multi-Pet Discount — you save</div>
                         <div class="item-amount"><span id="multi-dog-surcharge">$0.00</span></div>
+                    </div>
+                    <div class="line-item holiday-line" id="holiday-fee-row" style="display: none;">
+                        <div class="item-description">Holiday Fee</div>
+                        <div class="item-amount" id="holiday-fee-amount">$0.00</div>
                     </div>
                 </div>
 

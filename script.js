@@ -7,6 +7,7 @@ let currentDogData = { name: '', breed: '', size: '' };
 const NIGHTLY_RATE = 55;          // per 24-hour session, per pet (first pet)
 const HOURLY_RATE = 5;            // per extra hour, per pet (first pet)
 const ADDITIONAL_PET_FACTOR = 0.80; // additional pets pay 80% (20% off)
+const HOLIDAY_FEE = 25;           // flat fee per stay when the holiday toggle is on
 
 // DOM Elements
 const form = document.getElementById('calculator-form');
@@ -15,6 +16,7 @@ const pickupInput = document.getElementById('pickup-date');
 const dogsContainer = document.getElementById('dogs-container');
 const addDogBtn = document.getElementById('add-dog-btn');
 const resultsDiv = document.getElementById('results');
+const holidayToggle = document.getElementById('holiday-toggle');
 
 // Modals
 const datetimeModal = document.getElementById('datetime-modal');
@@ -74,6 +76,8 @@ domReady(function() {
 
     // Critical path first
     setupEventListeners();
+    document.getElementById('holiday-toggle-hint').textContent =
+        `Adds a ${formatCurrency(HOLIDAY_FEE)} holiday fee to the stay`;
 
     // Non-critical in idle time
     runWhenIdle(() => {
@@ -359,17 +363,18 @@ function calculateCost() {
         // Total = base x (1 + 0.20-off applied to each additional pet).
         const numDogs = dogs.length;
         const multiplier = 1 + (numDogs - 1) * ADDITIONAL_PET_FACTOR;
-        const totalCost = baseCost * multiplier;
+        const holidayFee = holidayToggle.checked ? HOLIDAY_FEE : 0;
+        const totalCost = baseCost * multiplier + holidayFee;
 
         // Discount = what all pets would cost at full price minus the actual total.
         const fullPriceCost = baseCost * numDogs;
-        const multiPetDiscount = numDogs > 1 ? fullPriceCost - totalCost : 0;
+        const multiPetDiscount = numDogs > 1 ? fullPriceCost - baseCost * multiplier : 0;
 
         // Hide loading state
         hideLoadingState();
 
         displayResults(numDogs, twentyFourHourSessions, Math.ceil(extraHours),
-                      sessionCost, extraHoursCost, baseCost, multiPetDiscount, fullPriceCost, totalCost);
+                      sessionCost, extraHoursCost, baseCost, multiPetDiscount, fullPriceCost, holidayFee, totalCost);
     }, 800); // Professional delay
 }
 
@@ -386,7 +391,7 @@ function generateQuoteNumber() {
     return `${year}${month}${day}-${random}`;
 }
 
-function displayResults(numDogs, sessions, extraHours, sessionCost, extraHoursCost, baseCost, multiPetDiscount, fullPriceCost, totalCost) {
+function displayResults(numDogs, sessions, extraHours, sessionCost, extraHoursCost, baseCost, multiPetDiscount, fullPriceCost, holidayFee, totalCost) {
     // Generate quote number
     document.getElementById('quote-number').textContent = generateQuoteNumber();
 
@@ -489,6 +494,15 @@ function displayResults(numDogs, sessions, extraHours, sessionCost, extraHoursCo
         baseSubtotalRow.style.display = 'flex';
         perPetHeader.style.display = 'none';
         multiDogRow.style.display = 'none';
+    }
+
+    // Holiday fee: flat charge per stay, shown only when toggled on
+    const holidayRow = document.getElementById('holiday-fee-row');
+    if (holidayFee > 0) {
+        holidayRow.style.display = 'flex';
+        document.getElementById('holiday-fee-amount').textContent = formatCurrency(holidayFee);
+    } else {
+        holidayRow.style.display = 'none';
     }
 
     // Update total with proper formatting
@@ -685,6 +699,9 @@ function clearAllData() {
         dogs = [];
         renderDogs();
 
+        // Reset holiday toggle
+        holidayToggle.checked = false;
+
         // Hide results
         resultsDiv.classList.add('hidden');
 
@@ -787,6 +804,17 @@ function updatePrintReceipt() {
             <td>—</td>
             <td>—</td>
             <td>${discount}</td>
+        `;
+        breakdown.appendChild(row);
+    }
+
+    if (document.getElementById('holiday-fee-row').style.display !== 'none') {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>Holiday Fee</td>
+            <td>1</td>
+            <td>${formatCurrency(HOLIDAY_FEE)}</td>
+            <td>${formatCurrency(HOLIDAY_FEE)}</td>
         `;
         breakdown.appendChild(row);
     }
