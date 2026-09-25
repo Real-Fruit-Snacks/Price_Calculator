@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Pet Intake Form - Dog Sitting At Danni's House</title>
+    <meta name="description" content="Tell us about your dog before their stay: feeding, medications, vet details, behavior, and emergency contacts. Fill it in, print it, and bring it to drop-off.">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#F0EAFF">
+
+    <!-- Same saved-theme handling as the main page, applied before first paint -->
+    <script>
+        (function () {
+            var theme = null;
+            try { theme = localStorage.getItem('preferred-theme'); } catch (e) {}
+            if (!theme) {
+                theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
+    <style>
+        :root {
+            color-scheme: light;
+            --crust:    #F0EAFF;
+            --mantle:   #FFFFFF;
+            --base:     #F8F5FF;
+            --surface0: #E0D4F7;
+            --surface1: #D4C4F0;
+            --surface2: #C8B4E9;
+            --text:     #2D1B5E;
+            --subtext1: #4A3B7A;
+            --subtext0: #6B5B8D;
+            --red:      #C2185B;
+            --accent-text:   #5B3FC4;
+            --green-text:    #00705A;
+            --btn-gradient:  linear-gradient(135deg, #5B3FC4, #007A70);
+            --btn-text:      #FFFFFF;
+            --text-gradient: linear-gradient(135deg, #5B3FC4, #007A70);
+            --focus-ring:    rgba(91, 63, 196, 0.35);
+            --shadow-card:   0 12px 40px rgba(45, 27, 94, 0.12);
+            --nav-bg: rgba(240, 234, 255, 0.95);
+        }
+
+        [data-theme="dark"] {
+            color-scheme: dark;
+            --crust:    #1A0D2E;
+            --mantle:   #261240;
+            --base:     #321852;
+            --surface0: #3E1F64;
+            --surface1: #4A2576;
+            --surface2: #562B88;
+            --text:     #F0EAFF;
+            --subtext1: #E0D4F7;
+            --subtext0: #D4C4F0;
+            --red:      #FF8A9B;
+            --accent-text:   #D4C4F0;
+            --green-text:    #00E6AA;
+            --btn-gradient:  linear-gradient(135deg, #D4C4F0, #00F0DE);
+            --btn-text:      #1A0D2E;
+            --text-gradient: linear-gradient(135deg, #D4C4F0, #00F0DE);
+            --focus-ring:    rgba(212, 196, 240, 0.45);
+            --shadow-card:   0 12px 40px rgba(0, 0, 0, 0.35);
+            --nav-bg: rgba(26, 13, 46, 0.95);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--crust);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 1rem;
+            z-index: 200;
+            padding: 0.75rem 1.25rem;
+            background: var(--text);
+            color: var(--crust);
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .skip-link:focus {
+            top: 1rem;
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--accent-text);
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            height: 64px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--surface0);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--text);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-link {
+            color: var(--subtext1);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-text);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--subtext1);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--surface0);
+            color: var(--text);
+        }
+
+        [data-theme="dark"] .theme-toggle .sun-icon,
+        :root:not([data-theme="dark"]) .theme-toggle .moon-icon {
+            display: none;
+        }
+
+        /* Page */
+        main {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 7rem 1.5rem 4rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-text);
+            margin-bottom: 0.75rem;
+        }
+
+        h1 {
+            font-size: 38px;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 1rem;
+            background: var(--text-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-wrap: balance;
+        }
+
+        .page-intro {
+            color: var(--subtext0);
+            font-size: 17px;
+            max-width: 640px;
+            margin: 0 auto;
+            text-wrap: balance;
+        }
+
+        .intro-steps {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+            font-size: 14px;
+            color: var(--subtext1);
+        }
+
+        .intro-steps span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .intro-steps b {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--surface0);
+            color: var(--text);
+            font-size: 12px;
+        }
+
+        /* Form */
+        .card {
+            background: var(--mantle);
+            border: 1px solid var(--surface0);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .card .card-hint {
+            color: var(--subtext0);
+            font-size: 14px;
+            margin-bottom: 1.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem 1.5rem;
+        }
+
+        .grid .full {
+            grid-column: 1 / -1;
+        }
+
+        .field label,
+        .field .field-label {
+            display: block;
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 0.5rem;
+        }
+
+        .optional {
+            font-weight: 400;
+            color: var(--subtext0);
+        }
+
+        .form-input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 2px solid var(--surface0);
+            border-radius: 10px;
+            background: var(--base);
+            color: var(--text);
+            font: inherit;
+            font-size: 16px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .form-input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent-text);
+            box-shadow: 0 0 0 4px var(--focus-ring);
+        }
+
+        .form-input::placeholder,
+        textarea::placeholder {
+            color: var(--subtext0);
+            opacity: 1;
+        }
+
+        .form-input::-webkit-calendar-picker-indicator {
+            opacity: 1;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+        }
+
+        fieldset {
+            border: none;
+            padding: 0;
+            margin: 0;
+            min-width: 0;
+        }
+
+        legend {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 0.5rem;
+            padding: 0;
+        }
+
+        .choices {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .choice {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.55rem 0.9rem;
+            border: 2px solid var(--surface0);
+            border-radius: 999px;
+            background: var(--base);
+            cursor: pointer;
+            font-size: 15px;
+            min-height: 44px;
+        }
+
+        .choice:has(input:checked) {
+            border-color: var(--accent-text);
+            background: var(--surface0);
+            font-weight: 600;
+        }
+
+        .choice input {
+            accent-color: var(--accent-text);
+            width: 18px;
+            height: 18px;
+            margin: 0;
+        }
+
+        .checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .check {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            border: 2px solid var(--surface0);
+            border-radius: 10px;
+            background: var(--base);
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .check input {
+            accent-color: var(--accent-text);
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .check:has(input:checked) {
+            border-color: var(--green-text);
+        }
+
+        /* Pet sections */
+        .pet-card {
+            position: relative;
+        }
+
+        .pet-card .card-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .pet-card .card-title-row h2 {
+            margin: 0;
+        }
+
+        .remove-pet-btn {
+            background: transparent;
+            color: var(--red);
+            border: 1px solid var(--red);
+            padding: 0.4rem 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font: inherit;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .remove-pet-btn:hover {
+            background: var(--red);
+            color: var(--crust);
+        }
+
+        .add-pet-btn {
+            width: 100%;
+            padding: 1rem;
+            border: 2px dashed var(--surface1);
+            background: transparent;
+            color: var(--accent-text);
+            border-radius: 12px;
+            font: inherit;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+        }
+
+        .add-pet-btn:hover {
+            border-color: var(--accent-text);
+            background: rgba(184, 165, 232, 0.12);
+        }
+
+        /* Signature */
+        .signature-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.25rem;
+        }
+
+        .signature-line {
+            border-bottom: 2px solid var(--subtext0);
+            height: 44px;
+        }
+
+        .signature-caption {
+            font-size: 13px;
+            color: var(--subtext0);
+            margin-top: 0.35rem;
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn-primary,
+        .btn-secondary,
+        .btn-tertiary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.9rem 1.75rem;
+            border-radius: 12px;
+            font: inherit;
+            font-weight: 600;
+            font-size: 16px;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            min-height: 48px;
+        }
+
+        .btn-primary {
+            background: var(--btn-gradient);
+            color: var(--btn-text);
+            box-shadow: 0 8px 32px rgba(91, 63, 196, 0.25);
+        }
+
+        .btn-secondary {
+            background: var(--surface0);
+            color: var(--text);
+            border: 1px solid var(--surface1);
+        }
+
+        .btn-tertiary {
+            background: transparent;
+            color: var(--subtext1);
+            border: 1px solid var(--surface0);
+        }
+
+        .btn-primary:hover, .btn-secondary:hover, .btn-tertiary:hover {
+            transform: translateY(-2px);
+        }
+
+        .save-note {
+            text-align: center;
+            font-size: 14px;
+            color: var(--subtext0);
+            margin-top: 1rem;
+        }
+
+        .form-error {
+            display: none;
+            margin: 1rem auto 0;
+            max-width: 560px;
+            padding: 0.85rem 1rem;
+            border-radius: 10px;
+            background: rgba(194, 24, 91, 0.08);
+            color: var(--red);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .form-error.visible {
+            display: block;
+        }
+
+        .form-input[aria-invalid="true"] {
+            border-color: var(--red);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--subtext0);
+            font-size: 14px;
+            border-top: 1px solid var(--surface0);
+        }
+
+        footer a {
+            color: var(--subtext1);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        footer a:hover {
+            color: var(--accent-text);
+        }
+
+        @media (max-width: 640px) {
+            nav {
+                padding: 0 1rem;
+                height: 56px;
+            }
+
+            main {
+                padding: 5.5rem 1rem 3rem;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .card {
+                padding: 1.5rem 1.25rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .signature-row {
+                grid-template-columns: 1fr;
+            }
+
+            .actions .btn-primary,
+            .actions .btn-secondary,
+            .actions .btn-tertiary {
+                width: 100%;
+            }
+        }
+
+        /* Print: a clean sheet with the answers, no chrome */
+        @media print {
+            @page {
+                size: letter;
+                margin: 0.5in;
+            }
+
+            html, body {
+                background: #fff;
+                color: #000;
+                font-size: 11pt;
+            }
+
+            nav, footer, .skip-link, .actions, .save-note, .form-error, .add-pet-btn,
+            .remove-pet-btn, .intro-steps, .theme-toggle {
+                display: none !important;
+            }
+
+            main {
+                max-width: none;
+                padding: 0;
+            }
+
+            .page-header {
+                margin-bottom: 1rem;
+                text-align: left;
+            }
+
+            h1 {
+                font-size: 20pt;
+                background: none;
+                -webkit-text-fill-color: #000;
+                color: #000;
+                margin-bottom: 0.25rem;
+            }
+
+            .section-label, .page-intro {
+                color: #444;
+                font-size: 10pt;
+            }
+
+            .card {
+                border: 1px solid #bbb;
+                border-radius: 6px;
+                padding: 0.75rem 1rem;
+                margin-bottom: 0.75rem;
+                break-inside: avoid;
+                background: #fff;
+            }
+
+            .card h2 {
+                font-size: 13pt;
+                color: #000;
+            }
+
+            .card .card-hint,
+            .optional {
+                display: none;
+            }
+
+            .grid {
+                gap: 0.5rem 1rem;
+            }
+
+            .field label, .field .field-label, legend {
+                font-size: 9pt;
+                color: #444;
+                margin-bottom: 0.15rem;
+            }
+
+            .form-input, textarea, select {
+                border: none;
+                border-bottom: 1px solid #999;
+                border-radius: 0;
+                padding: 0.15rem 0;
+                background: #fff;
+                color: #000;
+                font-size: 11pt;
+                box-shadow: none;
+            }
+
+            textarea {
+                min-height: 0;
+                resize: none;
+            }
+
+            .form-input::placeholder, textarea::placeholder {
+                color: transparent;
+            }
+
+            .choice, .check {
+                border: 1px solid #999;
+                background: #fff;
+                color: #000;
+                padding: 0.15rem 0.5rem;
+                min-height: 0;
+                border-radius: 4px;
+                font-size: 10pt;
+            }
+
+            .choice:has(input:checked), .check:has(input:checked) {
+                border-color: #000;
+                border-width: 2px;
+                font-weight: 700;
+            }
+
+            .choice input, .check input {
+                -webkit-appearance: checkbox;
+                appearance: auto;
+                accent-color: #000;
+            }
+
+            .signature-line {
+                border-bottom-color: #000;
+                height: 36px;
+            }
+
+            .signature-caption {
+                color: #444;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <nav aria-label="Main">
+        <a href="./" class="nav-logo" aria-label="Danni's House — home">
+            <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" fill="none" aria-hidden="true">
+                <defs>
+                    <linearGradient id="pawGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#B8A5E8;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#00D4C4;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <ellipse cx="16" cy="20" rx="6.7" ry="6" fill="url(#pawGradient)" />
+                <ellipse cx="10.7" cy="12" rx="2.7" ry="3.7" fill="url(#pawGradient)" />
+                <ellipse cx="16" cy="10" rx="2.7" ry="3.7" fill="url(#pawGradient)" />
+                <ellipse cx="21.3" cy="12" rx="2.7" ry="3.7" fill="url(#pawGradient)" />
+                <ellipse cx="8" cy="16" rx="2.4" ry="3.3" fill="url(#pawGradient)" />
+                <ellipse cx="24" cy="16" rx="2.4" ry="3.3" fill="url(#pawGradient)" />
+            </svg>
+            Danni's House
+        </a>
+        <div class="nav-actions">
+            <a href="./#calculator" class="nav-link">Cost Calculator</a>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Dark mode" aria-pressed="false">
+                <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="12" cy="12" r="5"/>
+                    <line x1="12" y1="1" x2="12" y2="3"/>
+                    <line x1="12" y1="21" x2="12" y2="23"/>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                    <line x1="1" y1="12" x2="3" y2="12"/>
+                    <line x1="21" y1="12" x2="23" y2="12"/>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </svg>
+                <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <main id="main">
+        <div class="page-header">
+            <div class="section-label">Before the Stay</div>
+            <h1>Pet Intake Form</h1>
+            <p class="page-intro">Tell us how to care for your dog the way you do at home. This is separate from the cost estimate and doesn't affect the price.</p>
+            <div class="intro-steps" aria-label="How it works">
+                <span><b>1</b> Fill it in</span>
+                <span><b>2</b> Print or save as PDF</span>
+                <span><b>3</b> Bring it to drop-off</span>
+            </div>
+        </div>
+
+        <form id="intake-form" novalidate>
+            <section class="card" aria-labelledby="owner-title">
+                <h2 id="owner-title">Your Details</h2>
+                <p class="card-hint">So we can reach you during the stay.</p>
+                <div class="grid">
+                    <div class="field">
+                        <label for="owner-name">Your name</label>
+                        <input type="text" id="owner-name" name="owner-name" class="form-input" autocomplete="name" required>
+                    </div>
+                    <div class="field">
+                        <label for="owner-phone">Mobile phone</label>
+                        <input type="tel" id="owner-phone" name="owner-phone" class="form-input" autocomplete="tel" required>
+                    </div>
+                    <div class="field">
+                        <label for="owner-email">Email <span class="optional">(optional)</span></label>
+                        <input type="email" id="owner-email" name="owner-email" class="form-input" autocomplete="email">
+                    </div>
+                    <div class="field">
+                        <label for="owner-address">Home address <span class="optional">(optional)</span></label>
+                        <input type="text" id="owner-address" name="owner-address" class="form-input" autocomplete="street-address">
+                    </div>
+                    <div class="field">
+                        <label for="emergency-name">Emergency contact name</label>
+                        <input type="text" id="emergency-name" name="emergency-name" class="form-input" required>
+                    </div>
+                    <div class="field">
+                        <label for="emergency-phone">Emergency contact phone</label>
+                        <input type="tel" id="emergency-phone" name="emergency-phone" class="form-input" required>
+                    </div>
+                    <div class="field full">
+                        <label for="stay-dates">Stay dates <span class="optional">(optional)</span></label>
+                        <input type="text" id="stay-dates" name="stay-dates" class="form-input" placeholder="e.g., Dec 24 – Dec 27">
+                    </div>
+                </div>
+            </section>
+
+            <div id="pets"></div>
+
+            <button type="button" id="add-pet-btn" class="add-pet-btn">+ Add another pet</button>
+
+            <section class="card" aria-labelledby="vet-title">
+                <h2 id="vet-title">Veterinarian</h2>
+                <p class="card-hint">Who we should call if your pet needs care.</p>
+                <div class="grid">
+                    <div class="field">
+                        <label for="vet-name">Clinic or vet name</label>
+                        <input type="text" id="vet-name" name="vet-name" class="form-input" required>
+                    </div>
+                    <div class="field">
+                        <label for="vet-phone">Clinic phone</label>
+                        <input type="tel" id="vet-phone" name="vet-phone" class="form-input" required>
+                    </div>
+                    <div class="field full">
+                        <label for="vet-address">Clinic address <span class="optional">(optional)</span></label>
+                        <input type="text" id="vet-address" name="vet-address" class="form-input">
+                    </div>
+                </div>
+            </section>
+
+            <section class="card" aria-labelledby="ack-title">
+                <h2 id="ack-title">Acknowledgments</h2>
+                <p class="card-hint">Please read and check each one.</p>
+                <div class="checklist">
+                    <label class="check">
+                        <input type="checkbox" name="ack-vaccines" required>
+                        <span>My pet's vaccinations are current, and I can provide records if asked.</span>
+                    </label>
+                    <label class="check">
+                        <input type="checkbox" name="ack-health" required>
+                        <span>To my knowledge my pet is healthy, free of fleas and ticks, and has not shown aggression toward people or other dogs beyond what I've described above.</span>
+                    </label>
+                    <label class="check">
+                        <input type="checkbox" name="ack-vet" required>
+                        <span>If my pet needs medical attention and I can't be reached, I authorize the caregiver to seek veterinary care, and I'm responsible for the cost.</span>
+                    </label>
+                    <label class="check">
+                        <input type="checkbox" name="ack-accurate" required>
+                        <span>The information on this form is accurate and complete.</span>
+                    </label>
+                </div>
+                <div class="signature-row">
+                    <div>
+                        <div class="signature-line" aria-hidden="true"></div>
+                        <div class="signature-caption">Owner signature (sign at drop-off)</div>
+                    </div>
+                    <div>
+                        <div class="signature-line" aria-hidden="true"></div>
+                        <div class="signature-caption">Date</div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="form-error" id="form-error" role="alert"></div>
+
+            <div class="actions">
+                <button type="submit" class="btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <polyline points="6,9 6,2 18,2 18,9"/>
+                        <path d="M6,18H4a2,2,0,0,1-2-2V11a2,2,0,0,1,2-2H20a2,2,0,0,1,2,2v5a2,2,0,0,1-2,2H18"/>
+                        <polyline points="6,14 18,14 18,22 6,22 6,14"/>
+                    </svg>
+                    Print or Save as PDF
+                </button>
+                <a href="./#calculator" class="btn-secondary">Back to Cost Calculator</a>
+                <button type="button" id="clear-form-btn" class="btn-tertiary">Clear Form</button>
+            </div>
+            <p class="save-note" id="save-note">Your answers are saved on this device as you type, so you can come back and finish later.</p>
+        </form>
+    </main>
+
+    <footer>
+        <a href="./">Home</a> · <a href="./#pricing">Pricing</a> · <a href="./#faq">FAQ</a><br>
+        © <span class="current-year">2025</span> Dog Sitting At Danni's House
+    </footer>
+
+    <!-- One pet section; cloned for each additional pet -->
+    <template id="pet-template">
+        <section class="card pet-card">
+            <div class="card-title-row">
+                <h2 class="pet-heading">Your Pet</h2>
+                <button type="button" class="remove-pet-btn">Remove</button>
+            </div>
+            <p class="card-hint">The basics, plus anything that helps us care for them.</p>
+            <div class="grid">
+                <div class="field">
+                    <label>Pet's name</label>
+                    <input type="text" data-name="pet-name" class="form-input" required>
+                </div>
+                <div class="field">
+                    <label>Breed</label>
+                    <input type="text" data-name="pet-breed" class="form-input">
+                </div>
+                <div class="field">
+                    <label>Age</label>
+                    <input type="text" data-name="pet-age" class="form-input" placeholder="e.g., 3 years">
+                </div>
+                <div class="field">
+                    <label>Weight</label>
+                    <input type="text" data-name="pet-weight" class="form-input" placeholder="e.g., 45 lbs">
+                </div>
+                <div class="field">
+                    <fieldset>
+                        <legend>Sex</legend>
+                        <div class="choices">
+                            <label class="choice"><input type="radio" data-name="pet-sex" value="Male"> Male</label>
+                            <label class="choice"><input type="radio" data-name="pet-sex" value="Female"> Female</label>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="field">
+                    <fieldset>
+                        <legend>Spayed / neutered</legend>
+                        <div class="choices">
+                            <label class="choice"><input type="radio" data-name="pet-fixed" value="Yes"> Yes</label>
+                            <label class="choice"><input type="radio" data-name="pet-fixed" value="No"> No</label>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="field full">
+                    <label>Feeding — food, amount, and times</label>
+                    <textarea data-name="pet-feeding" placeholder="e.g., 1 cup Purina Pro Plan at 7am and 6pm; no table scraps" required></textarea>
+                </div>
+                <div class="field">
+                    <label>Treats allowed? <span class="optional">(optional)</span></label>
+                    <input type="text" data-name="pet-treats" class="form-input" placeholder="e.g., Yes, one dental chew a day">
+                </div>
+                <div class="field">
+                    <label>Allergies <span class="optional">(optional)</span></label>
+                    <input type="text" data-name="pet-allergies" class="form-input" placeholder="Food or environmental">
+                </div>
+                <div class="field full">
+                    <label>Medications or supplements — name, dose, and schedule <span class="optional">(optional)</span></label>
+                    <textarea data-name="pet-meds" placeholder="e.g., Apoquel 16mg, one tablet with breakfast"></textarea>
+                </div>
+                <div class="field full">
+                    <label>Health conditions we should know about <span class="optional">(optional)</span></label>
+                    <textarea data-name="pet-health" placeholder="e.g., arthritis, seizures, recent surgery, anxiety"></textarea>
+                </div>
+
+                <div class="field">
+                    <fieldset>
+                        <legend>House-trained</legend>
+                        <div class="choices">
+                            <label class="choice"><input type="radio" data-name="pet-housetrained" value="Yes"> Yes</label>
+                            <label class="choice"><input type="radio" data-name="pet-housetrained" value="Mostly"> Mostly</label>
+                            <label class="choice"><input type="radio" data-name="pet-housetrained" value="No"> No</label>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="field">
+                    <fieldset>
+                        <legend>Crate-trained</legend>
+                        <div class="choices">
+                            <label class="choice"><input type="radio" data-name="pet-crate" value="Yes"> Yes</label>
+                            <label class="choice"><input type="radio" data-name="pet-crate" value="No"> No</label>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="field">
+                    <fieldset>
+                        <legend>Good with other dogs</legend>
+                        <div class="choices">
+                            <label class="choice"><input type="radio" data-name="pet-dogs" value="Yes"> Yes</label>
+                            <label class="choice"><input type="radio" data-name="pet-dogs" value="Sometimes"> Sometimes</label>
+                            <label class="choice"><input type="radio" data-name="pet-dogs" value="No"> No</label>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="field">
+                    <fieldset>
+                        <legend>Good with children</legend>
+                        <div class="choices">
+                            <label class="choice"><input type="radio" data-name="pet-kids" value="Yes"> Yes</label>
+                            <label class="choice"><input type="radio" data-name="pet-kids" value="Unsure"> Unsure</label>
+                            <label class="choice"><input type="radio" data-name="pet-kids" value="No"> No</label>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="field full">
+                    <label>Walks and exercise <span class="optional">(optional)</span></label>
+                    <input type="text" data-name="pet-exercise" class="form-input" placeholder="e.g., Two 20-minute walks; pulls on leash; loves fetch">
+                </div>
+                <div class="field full">
+                    <label>Fears, triggers, or habits we should know about <span class="optional">(optional)</span></label>
+                    <textarea data-name="pet-behavior" placeholder="e.g., scared of thunder, counter-surfs, digs under fences, escape artist"></textarea>
+                </div>
+                <div class="field full">
+                    <label>Sleeping routine <span class="optional">(optional)</span></label>
+                    <input type="text" data-name="pet-sleep" class="form-input" placeholder="e.g., sleeps in a crate with the door open; needs a night light">
+                </div>
+                <div class="field full">
+                    <label>What you're bringing <span class="optional">(optional)</span></label>
+                    <input type="text" data-name="pet-items" class="form-input" placeholder="e.g., food, bed, leash, favorite toy, medications">
+                </div>
+                <div class="field full">
+                    <label>Anything else? <span class="optional">(optional)</span></label>
+                    <textarea data-name="pet-notes"></textarea>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <script src="intake.js"></script>
+</body>
+</html>

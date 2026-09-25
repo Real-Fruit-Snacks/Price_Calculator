@@ -38,6 +38,7 @@ To change a price, edit the constant in `script.js`. The pricing cards, FAQ, est
 - Works on phones, with a collapsible menu and touch-friendly controls
 - Keyboard and screen-reader accessible: dialogs trap focus and close with Escape, errors and results are announced, all controls are labelled
 - Respects the "reduce motion" system setting
+- Pet intake form (`intake.html`): guests fill in feeding, medications, vet and behavior details for each pet, then print or save it as a PDF to bring to drop-off. Drafts are kept in the guest's browser; nothing is sent anywhere
 - Custom 404 page that matches the site
 
 ## Files
@@ -45,6 +46,8 @@ To change a price, edit the constant in `script.js`. The pricing cards, FAQ, est
 ```
 index.html            the whole site (styles are inline in <head>)
 script.js             calculator, dialogs, theme, print and calendar export
+intake.html           pet intake form (print / save as PDF)
+intake.js             intake form behaviour: per-pet sections, draft saving, validation
 404.html              self-contained not-found page
 favicon.svg           site icon
 apple-touch-icon.png  iPhone home-screen icon
