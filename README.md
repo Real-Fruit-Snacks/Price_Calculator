@@ -41,6 +41,7 @@ Dog Sitting At Danni's House provides professional pet care services in a home e
 ### Service Policies
 
 - **Deposit Requirement**: $50 for stays exceeding 3 days
+- **Holiday Fee**: Flat $25 per stay when the stay includes a holiday
 - **Payment Methods**: Cash (preferred), Venmo accepted
 - **Estimate Validity**: 30 days from issue date
 - **Cancellation Policy**: 24-hour advance notice required
