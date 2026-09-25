@@ -29,6 +29,8 @@
 
     <style>
         :root {
+            color-scheme: light;   /* native controls (date/time pickers) match the theme */
+
             /* Base surfaces (Custom Poster Palette - Light Theme) */
             --crust:    #F0EAFF;   /* page background - soft lavender */
             --mantle:   #FFFFFF;   /* card backgrounds - clean white */
@@ -74,6 +76,8 @@
 
         /* Dark Theme (Custom Poster Palette - Dark Version) */
         [data-theme="dark"] {
+            color-scheme: dark;
+
             /* Base surfaces (dark to light) */
             --crust:    #1A0D2E;   /* page background - deep purple */
             --mantle:   #261240;   /* card backgrounds - dark purple */
@@ -1205,6 +1209,20 @@
         .form-input::placeholder {
             color: var(--subtext0);
             opacity: 1;
+        }
+
+        /* Native date/time picker buttons: always visible and easy to tap */
+        .form-input::-webkit-calendar-picker-indicator {
+            opacity: 1;
+            width: 22px;
+            height: 22px;
+            padding: 2px;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        .form-input::-webkit-calendar-picker-indicator:hover {
+            background-color: var(--surface0);
         }
 
         .dogs-container {
